@@ -111,19 +111,51 @@ def latex_to_unicode(latex: str) -> str | None:
     result = re.sub(r'\\textit\{([^}]+)\}', r'\1', result)
     result = re.sub(r'\\textbf\{([^}]+)\}', r'\1', result)
     
+    # Track if any conversion fails
+    failed = False
+
     # Handle superscripts: ^{...} or ^x
     def super_replace(m):
+        nonlocal failed
         content = m.group(1) if m.group(1) else m.group(2)
-        return ''.join(SUPER.get(c, c) for c in content)
+        res = []
+        for c in content:
+            if c in SUPER:
+                res.append(SUPER[c])
+            elif c.isspace():
+                # Spaces in superscript are rare but acceptable to ignore or keep as space
+                # But typically we want dense superscript. Let's keep space?
+                # Actually, usually no spaces in superscripts.
+                pass
+            else:
+                failed = True
+                return m.group(0)
+        return ''.join(res)
+
     result = re.sub(r'\^\{([^}]+)\}', super_replace, result)
+    if failed: return None
     result = re.sub(r'\^([a-zA-Z0-9αβγδθφ])', super_replace, result)
+    if failed: return None
     
     # Handle subscripts: _{...} or _x
     def sub_replace(m):
+        nonlocal failed
         content = m.group(1) if m.group(1) else m.group(2)
-        return ''.join(SUB.get(c, c) for c in content)
+        res = []
+        for c in content:
+            if c in SUB:
+                res.append(SUB[c])
+            elif c.isspace():
+                pass
+            else:
+                failed = True
+                return m.group(0)
+        return ''.join(res)
+
     result = re.sub(r'_\{([^}]+)\}', sub_replace, result)
+    if failed: return None
     result = re.sub(r'_([a-zA-Z0-9])', sub_replace, result)
+    if failed: return None
     
     # Handle hat: \hat{x} -> x̂
     result = re.sub(r'\\hat\{([a-zA-Z])\}', r'\1̂', result)
