@@ -61,4 +61,8 @@ I write everything in VS Code. I have my `$$` macros set up, my snippets ready, 
 
 I wanted something that let me write in the environment I love (LaTeX/Markdown) and just *push* to the platform I publish on. `doc2substack` is my little bridge between those two worlds. It's not perfect, but it sure beats `Cmd+Shift+4`.
 
+## Feedback
+
+If you find a bug or have a feature request, please [open an issue on GitHub](https://github.com/closedform/substack/issues). Or, just drop a comment below—I read everything.
+
 Happy writing.
