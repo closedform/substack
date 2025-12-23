@@ -4,13 +4,13 @@ If you write about physics, math, or quantitative finance, you know the pain of 
 
 You have a beautiful LaTeX document or a Markdown file full of carefully crafted equations. You want to publish it on Substack. But when you paste it in, the math breaks. Superscripts detach, logic symbols vanish, and complex equations turn into garbage.
 
-We built **doc2substack** to solve this.
+I built **doc2substack** to solve this.
 
 It is a lightweight, open-source utility that converts your technical documents into clean, Substack-ready HTML. It preserves your prose, converts inline math to native Unicode for smooth reading, and renders complex display math as crisp, high-DPI images.
 
 ## Where to Get It
 
-The utility is open source and available directly in our repository:
+The utility is open source and available directly in the repository:
 
 [https://github.com/closedform/substack/tree/main/utils](https://github.com/closedform/substack/tree/main/utils)
 
@@ -27,10 +27,10 @@ The script is a single Python file with no complex dependencies (just standard P
 
 ## The Full Example
 
-Here is a demonstration of what `doc2substack` can do. We will mix prose, inline math, and display equations.
+Here is a demonstration of what `doc2substack` can do. I will mix prose, inline math, and display equations.
 
 ### 1. Unified Inline Math
-We automatically convert simple LaTeX expressions into Unicode characters so they flow naturally with the text.
+It automatically converts simple LaTeX expressions into Unicode characters so they flow naturally with the text.
 
 *   **Input:** `Let $\alpha$ be the learning rate, $\sigma$ the volatility, and $w^t$ be the weights at time $t$. We verify that $\alpha > 0$ and $\nabla f \approx 0$.`
 *   **Output:** Let α be the learning rate, σ the volatility, and wᵗ be the weights at time t. We verify that α > 0 and ∇f ≈ 0.
@@ -53,7 +53,7 @@ The tool also handles:
 *   **Smart Quotes:** Converts "straight quotes" to “curly quotes” (or vice versa depending on your preference settings).
 *   **Layout:** Removes artifacts from pandoc conversions to ensure a clean paste.
 
-## Why We Built This
+## Why I Built This
 
 Honestly, I was just tired of the screenshot workflow.
 
