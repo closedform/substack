@@ -1,0 +1,64 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\geometry{margin=1in}
+
+\title{\textbf{doc2substack: A Bridge for Mathematical Writing}}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+If you write about physics, math, or quantitative finance, you know the pain of moving from your writing environment to Substack. You have a beautiful LaTeX document or a Markdown file full of carefully crafted equations, but when you paste it in, the math breaks. Superscripts detach, logic symbols vanish, and complex equations turn into garbage.
+\end{abstract}
+
+\section{The Solution}
+\textbf{doc2substack} is a lightweight, open-source utility that converts your technical documents into clean, Substack-ready HTML. It preserves your prose, converts inline math to native Unicode for smooth reading, and renders complex display math as crisp, high-DPI images.
+
+\section{How to Use It}
+The utility is open source and available directly in our repository:
+\url{https://github.com/closedform/substack/tree/main/utils}
+
+\begin{enumerate}
+    \item \textbf{Write naturally:} Write your post in LaTeX (\texttt{.tex}), Markdown (\texttt{.md}), or any other Pandoc-supported format (\texttt{.docx}, \texttt{.ipynb}, etc.).
+    \item \textbf{Run the converter:}
+    \begin{verbatim}
+    python substack/utils/doc2substack.py my_post.tex
+    \end{verbatim}
+    \item \textbf{Publish:} Open the generated \texttt{.html} file, copy everything, and paste it into the Substack editor.
+\end{enumerate}
+
+\section{Example: The Heat Equation}
+The following section demonstrates \texttt{doc2substack} by rendering a standard PDE derivation. Notice how numbered equations are preserved and rendered as images.
+
+Consider the one-dimensional heat equation for a function $u(x,t)$ representing temperature distribution over a rod:
+\begin{equation}
+    \frac{\partial u}{\partial t} = \alpha \frac{\partial^2 u}{\partial x^2}
+\end{equation}
+where $\alpha$ is the thermal diffusivity constant. The goal is to find a solution using the method of separation of variables. Let $u(x,t) = X(x)T(t)$. Substituting this form into the PDE yields:
+\begin{equation}
+    \frac{1}{\alpha T} \frac{dT}{dt} = \frac{1}{X} \frac{d^2X}{dx^2} = -\lambda
+\end{equation}
+Here, $\lambda$ is the separation constant. This splits the problem into two ordinary differential equations. The temporal component decays exponentially as $T(t) \propto e^{-\lambda\alpha t}$, while the spatial component satisfies:
+\begin{equation} \label{eq:spatial}
+    X''(x) + \lambda X(x) = 0
+\end{equation}
+For physical boundary conditions (e.g., Dirichlet conditions $u(0,t) = u(L,t) = 0$), the eigenvalues are discrete, given by $\lambda_n = (n\pi/L)^2$. The general solution is a superposition of these modes:
+\begin{equation}
+    u(x,t) = \sum_{n=1}^{\infty} B_n \sin\left(\frac{n\pi x}{L}\right) e^{-\alpha \left(\frac{n\pi}{L}\right)^2 t}
+\end{equation}
+The coefficients $B_n$ are determined by the initial condition $u(x,0)$ via Fourier sine series orthogonality.
+
+\section*{Feedback}
+If you find a bug or have a feature request, please \href{https://github.com/closedform/substack/issues}{open an issue on GitHub}. Or, just drop a comment below.
+
+\vspace{1em}
+\noindent Cheers,
+
+\end{document}
