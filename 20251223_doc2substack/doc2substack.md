@@ -23,44 +23,33 @@ The script is a single Python file with no complex dependencies (just standard P
     ```
 3.  **Publish:** Open the generated `.html` file, copy everything, and paste it into the Substack editor.
 
-## The Full Example
+## Example: The Heat Equation
 
-Here is a demonstration of what `doc2substack` can do. I will mix prose, inline math, and display equations.
+The following section demonstrates `doc2substack` by rendering a standard PDE derivation. It mixes prose, inline Unicode math, and standard LaTeX display blocks.
 
-### 1. Unified Inline Math
-It automatically converts simple LaTeX expressions into Unicode characters so they flow naturally with the text.
+---
 
-*   **Input:** `Let $\alpha$ be the learning rate, $\sigma$ the volatility, and $w^t$ be the weights at time $t$. We verify that $\alpha > 0$ and $\nabla f \approx 0$.`
-*   **Output:** Let α be the learning rate, σ the volatility, and wᵗ be the weights at time t. We verify that α > 0 and ∇f ≈ 0.
+Consider the one-dimensional heat equation for a function u(x,t) representing temperature distribution over a rod:
 
-This keeps sentences readable without those jagged, misaligned images breaking your paragraph's line height.
+$$ \frac{\partial u}{\partial t} = \alpha \frac{\partial^2 u}{\partial x^2} $$
 
-### 2. Complex Display Math
-For rigorous derivations, we need proper rendering. The tool detects display blocks (like `$$...$$`) and renders them as high-quality images.
+where α is the thermal diffusivity constant. The goal is to find a solution using the method of separation of variables. Let u(x,t) = X(x)T(t). Substituting this form into the PDE yields:
 
-Consider the Gaussian integral:
-$$ \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} $$
+$$ \frac{1}{\alpha T} \frac{dT}{dt} = \frac{1}{X} \frac{d^2X}{dx^2} = -\lambda $$
 
-Or the definition of the Christoffel symbols in terms of the metric tensor $g_{ij}$:
-$$ \Gamma^k_{ij} = \frac{1}{2}g^{km}\left(\frac{\partial g_{mj}}{\partial x^i} + \frac{\partial g_{mi}}{\partial x^j} - \frac{\partial g_{ij}}{\partial x^m}\right) $$
+Here, λ is the separation constant. This splits the problem into two ordinary differential equations. The temporal component decays exponentially as T(t) ∝ e^{-λαt}, while the spatial component satisfies:
 
-These images are generated at 200 DPI (configurable) to look sharp on retina displays, and are automatically centered.
+$$ X''(x) + \lambda X(x) = 0 $$
 
-### 3. Structural Cleanup
-The tool also handles:
-*   **Smart Quotes:** Converts "straight quotes" to “curly quotes” (or vice versa depending on your preference settings).
-*   **Layout:** Removes artifacts from pandoc conversions to ensure a clean paste.
+For physical boundary conditions (e.g., Dirichlet conditions u(0,t) = u(L,t) = 0), the eigenvalues are discrete, given by λₙ = (nπ/L)². The general solution is a superposition of these modes:
 
-## Why I Built This
+$$ u(x,t) = \sum_{n=1}^{\infty} B_n \sin\left(\frac{n\pi x}{L}\right) e^{-\alpha \left(\frac{n\pi}{L}\right)^2 t} $$
 
-Honestly, I was just tired of the screenshot workflow.
+The coefficients Bₙ are determined by the initial condition u(x,0) via Fourier sine series orthogonality.
 
-I write everything in VS Code. I have my `$$` macros set up, my snippets ready, and my git history clean. Moving to Substack felt like stepping back into the Stone Age—manually screenshotting equations, cropping them, and hoping they aligned with the text.
-
-I wanted something that let me write in the environment I love (LaTeX/Markdown) and just *push* to the platform I publish on. `doc2substack` is my little bridge between those two worlds. It's not perfect, but it sure beats `Cmd+Shift+4`.
 
 ## Feedback
 
-If you find a bug or have a feature request, please [open an issue on GitHub](https://github.com/closedform/substack/issues). Or, just drop a comment below—I read everything.
+If you find a bug or have a feature request, please [open an issue on GitHub](https://github.com/closedform/substack/issues). Or, just drop a comment below.
 
-Happy writing.
+Cheers,

@@ -42,6 +42,20 @@ Since the script only uses the standard library (no `pip install` needed), you c
 python doc2substack.py article.tex
 ```
 
+## Examples
+
+Check the `examples/doc2substack/` directory for sample files:
+- `math_example.tex`: Standard LaTeX document with inline and display math.
+- `test_notebook.ipynb`: Jupyter notebook with code and math cells.
+
+To run an example:
+```bash
+python doc2substack.py examples/doc2substack/math_example.tex
+```
+
+## Feedback
+If you find a bug or have a feature request, please open an issue.
+
 ### Options
 
 ```bash

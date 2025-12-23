@@ -1,0 +1,30 @@
+\documentclass{article}
+\usepackage{amsmath}
+
+\title{Math Example}
+\author{Test User}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+This is a test document to demonstrate \texttt{doc2substack} conversion.
+
+\subsection{Inline Math}
+Let $\alpha$ be a scaling factor and $\sigma$ be the variance. We define the kernel $K(x,y)$.
+
+\subsection{Display Math}
+The Gaussian integral is given by:
+$$ \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} $$
+
+We can also align equations:
+$$
+\begin{aligned}
+    f(x) &= x^2 + 2x + 1 \\
+         &= (x+1)^2
+\end{aligned}
+$$
+
+\end{document}

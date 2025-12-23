@@ -16,7 +16,44 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from mappings import GREEK, SYMBOLS, SUPER, SUB
+
+# Mappings for LaTeX to Unicode conversion
+GREEK = {
+    'alpha': 'α', 'beta': 'β', 'gamma': 'γ', 'delta': 'δ', 'epsilon': 'ε',
+    'zeta': 'ζ', 'eta': 'η', 'theta': 'θ', 'iota': 'ι', 'kappa': 'κ',
+    'lambda': 'λ', 'mu': 'μ', 'nu': 'ν', 'xi': 'ξ', 'pi': 'π', 'rho': 'ρ',
+    'sigma': 'σ', 'tau': 'τ', 'upsilon': 'υ', 'phi': 'φ', 'chi': 'χ',
+    'psi': 'ψ', 'omega': 'ω',
+    'Gamma': 'Γ', 'Delta': 'Δ', 'Theta': 'Θ', 'Lambda': 'Λ', 'Xi': 'Ξ',
+    'Pi': 'Π', 'Sigma': 'Σ', 'Phi': 'Φ', 'Psi': 'Ψ', 'Omega': 'Ω',
+}
+
+SYMBOLS = {
+    r'\times': '×', r'\cdot': '·', r'\leq': '≤', r'\geq': '≥', r'\neq': '≠',
+    r'\approx': '≈', r'\propto': '∝', r'\infty': '∞', r'\partial': '∂',
+    r'\nabla': '∇', r'\in': '∈', r'\subset': '⊂', r'\to': '→', r'\sim': '∼',
+    r'\perp': '⊥', r'\parallel': '∥', r'\pm': '±', r'\mp': '∓',
+    r'\equiv': '≡', r'\forall': '∀', r'\exists': '∃', r'\prime': '′',
+}
+
+SUPER = {
+    '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶',
+    '7': '⁷', '8': '⁸', '9': '⁹', 'i': 'ⁱ', 'j': 'ʲ', 'k': 'ᵏ', 'n': 'ⁿ',
+    'm': 'ᵐ', 'T': 'ᵀ', '+': '⁺', '-': '⁻', '=': '⁼', '(': '⁽', ')': '⁾',
+    'a': 'ᵃ', 'b': 'ᵇ', 'c': 'ᶜ', 'd': 'ᵈ', 'e': 'ᵉ', 'f': 'ᶠ', 'g': 'ᵍ',
+    'h': 'ʰ', 'l': 'ˡ', 'o': 'ᵒ', 'p': 'ᵖ', 'r': 'ʳ', 's': 'ˢ', 't': 'ᵗ',
+    'u': 'ᵘ', 'v': 'ᵛ', 'w': 'ʷ', 'x': 'ˣ', 'y': 'ʸ', 'z': 'ᶻ',
+    'α': 'ᵅ', 'β': 'ᵝ', 'γ': 'ᵞ', 'δ': 'ᵟ', 'θ': 'ᶿ', 'φ': 'ᵠ',
+}
+
+SUB = {
+    '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆',
+    '7': '₇', '8': '₈', '9': '₉', 'i': 'ᵢ', 'j': 'ⱼ', 'k': 'ₖ', 'a': 'ₐ',
+    'e': 'ₑ', 'o': 'ₒ', 'x': 'ₓ', 'h': 'ₕ', 'r': 'ᵣ', 's': 'ₛ', 't': 'ₜ',
+    'u': 'ᵤ', 'v': 'ᵥ', 'p': 'ₚ', 'n': 'ₙ', 'm': 'ₘ', '+': '₊', '-': '₋',
+    '(': '₍', ')': '₎',
+}
+
 
 def is_complex_math(latex: str) -> bool:
     """Check if LaTeX expression is too complex for Unicode conversion."""
@@ -132,10 +169,10 @@ def convert_inline_math_to_unicode(content: str) -> str:
     return content
 
 
-def tex_to_markdown(tex_path: Path) -> str:
-    """Convert LaTeX to Markdown using pandoc."""
+def pandoc_to_markdown(input_path: Path) -> str:
+    """Convert any supported format (LaTeX, docx, ipynb, etc.) to Markdown using pandoc."""
     result = subprocess.run(
-        ['pandoc', str(tex_path), '-t', 'markdown', '--wrap=none'],
+        ['pandoc', str(input_path), '-t', 'markdown', '--wrap=none'],
         capture_output=True,
         text=True,
         check=True
@@ -148,8 +185,10 @@ def clean_markdown(md_content: str) -> str:
     content = md_content
     
     # Remove ::: fenced divs (pandoc custom environments)
-    content = re.sub(r'^:::\s*\{[^}]*\}\s*$', '', content, flags=re.MULTILINE)
-    content = re.sub(r'^:::\s*$', '', content, flags=re.MULTILINE)
+    # Matches ::: or :::: or more, followed by { attributes }
+    content = re.sub(r'^:{3,}\s*\{[^}]*\}\s*$', '', content, flags=re.MULTILINE)
+    # Matches ::: or :::: or more alone on a line
+    content = re.sub(r'^:{3,}\s*$', '', content, flags=re.MULTILINE)
     
     # Remove \begin{equation} / \end{equation} inside $$ blocks
     content = re.sub(r'\$\$\s*\\begin\{equation\}', '$$', content)
@@ -182,7 +221,6 @@ def markdown_to_html(md_path: Path, output_path: Path, dpi: int = 200, title: st
         cmd.extend(['--metadata', f'title={title}'])
     
     subprocess.run(cmd, check=True)
-
 
 
 def post_process_html(html_path: Path) -> None:
@@ -237,10 +275,10 @@ def convert_to_substack(
     title: str = ""
 ) -> Path:
     """
-    Full pipeline: LaTeX/Markdown -> Markdown -> Unicode cleanup -> HTML with webtex -> Post-process.
+    Full pipeline: Any Format -> Markdown -> Unicode cleanup -> HTML with webtex -> Post-process.
     
     Args:
-        input_path: Path to input .tex or .md file
+        input_path: Path to input file (e.g., .tex, .md, .docx, .ipynb, .rst)
         output_path: Path for output .html file (default: same name as input)
         dpi: DPI for equation images (default: 200)
         title: HTML document title
@@ -257,15 +295,14 @@ def convert_to_substack(
     print(f"Converting {input_path.name} -> {output_path.name}")
     
     # Step 1: Input Processing
-    if input_path.suffix.lower() == '.tex':
-        print("  [1/5] Converting LaTeX to Markdown...")
-        md_content = tex_to_markdown(input_path)
-    elif input_path.suffix.lower() == '.md':
+    if input_path.suffix.lower() == '.md':
         print("  [1/5] Reading Markdown input...")
         with open(input_path, 'r', encoding='utf-8') as f:
             md_content = f.read()
     else:
-        raise ValueError(f"Unsupported file extension: {input_path.suffix}")
+        # Let pandoc handle conversion for .tex, .docx, .ipynb, etc.
+        print(f"  [1/5] Converting {input_path.suffix} to Markdown via pandoc...")
+        md_content = pandoc_to_markdown(input_path)
     
     # Step 2: Clean up Markdown
     print("  [2/5] Cleaning and normalizing Markdown...")
@@ -319,7 +356,7 @@ Examples:
     python doc2substack.py article.tex --output article_substack.html
         """
     )
-    parser.add_argument('input', type=Path, help='Input file (.tex or .md)')
+    parser.add_argument('input', type=Path, help='Input file (e.g. .tex, .md, .docx, .ipynb)')
     parser.add_argument('-o', '--output', type=Path, help='Output HTML file (default: input.html)')
     parser.add_argument('--dpi', type=int, default=200, help='DPI for equation images (default: 200)')
     parser.add_argument('--title', type=str, default='', help='HTML document title')
@@ -331,9 +368,6 @@ Examples:
     if not args.input.exists():
         print(f"Error: Input file not found: {args.input}")
         return 1
-    
-    if args.input.suffix.lower() not in ['.tex', '.md']:
-        print(f"Warning: Input file does not have .tex or .md extension: {args.input}")
     
     try:
         convert_to_substack(
