@@ -1,0 +1,2500 @@
+\documentclass[11pt]{article}
+
+%%%%%%%%%%%%%
+%  Imports  %
+%%%%%%%%%%%%%
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath,amsthm,amsfonts,amssymb}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{microtype} % prettification
+
+\usepackage{hyperref} % Crosslinks and hyperlinks
+% Custom settings for link appearance: tweak it if you'd like
+\definecolor{bluish}{RGB}{0,76,153}
+\hypersetup{%
+	breaklinks = true,     % break urls across lines if needed
+	colorlinks = true,
+	linkcolor   = red,     % cross-references are colored red
+	citecolor  = darkgray,
+	urlcolor   = bluish,
+}
+
+% Number equations by section
+\numberwithin{equation}{section}
+
+%%%%%%%%%%%%%%
+%  Theorems  %
+    %%%%%%%%%%%%%%
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{conjecture}[lemma]{Conjecture}
+\newtheorem{corollary}[lemma]{Corollary}
+\newtheorem{note}[lemma]{Note}
+\newtheorem{proposition}[lemma]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[lemma]{Definition}
+\newtheorem{notation}[lemma]{Notation}
+\newtheorem{terminology}[lemma]{Terminology}
+\newtheorem{remark}[lemma]{Remark}
+\newtheorem{example}[lemma]{Example}
+
+
+%%%%%%%%%%%%
+%  Macros  %
+%%%%%%%%%%%%
+
+% New terminology/math
+\newcommand*{\newword}[1]{\textcolor{blue}{\emph{#1}}}
+
+% Highlight math
+\colorlet{defblue}{blue!12}
+\newcommand*{\newmath}[1]{%
+	{%
+		\setlength{\fboxsep}{0pt}%
+		\mathchoice%
+		{\colorbox{defblue}{$\displaystyle #1$}} %
+		{\colorbox{defblue}{$\textstyle #1$}}%
+		{\colorbox{defblue}{$\scriptstyle #1$}}%
+		{\colorbox{defblue}{$\scriptscriptstyle #1$}}
+	}%
+}
+
+\colorlet{hired}{red!12}
+\newcommand*{\highlight}[1]{%
+	{%
+		\setlength{\fboxsep}{0pt}%
+		\mathchoice%
+		{\colorbox{hired}{$\displaystyle #1$}} %
+		{\colorbox{hired}{$\textstyle #1$}}%
+		{\colorbox{hired}{$\scriptstyle #1$}}%
+		{\colorbox{hired}{$\scriptscriptstyle #1$}}
+	}%
+}
+
+% Common operators
+\DeclareMathOperator{\Tr}{Tr}
+
+% Endomorphisms
+\newcommand{\End}{\operatorname{End}}
+
+% Types
+\newcommand{\Real}{\mathbb{R}}            % Real numbers
+\newcommand{\NNReal}{\mathbb{R}_{\geq 0}} % Non-negative Real numbers
+\newcommand{\Borel}{\operatorname{Borel}}
+\newcommand{\expect}{\mathbb{E}}          % Expectation value
+\newcommand{\E}{\expect}                  % Expectation value
+\newcommand*{\hs}[1]{\mathcal{#1}}        % Hilbert space
+\newcommand*{\ms}[1]{\mathfrak{#1}}       % Measure space
+\newcommand*{\msf}[1]{\ms{#1}_{\bullet}}  % Filtered meeasure space
+\newcommand{\RV}{\operatorname{L}}        % measurable functions/random variables
+\newcommand{\SP}{\operatorname{SP}}       % Stochastic Processes
+\newcommand{\SK}{\operatorname{C^{\infty}_{c}}}       % Smooth, compactly supported
+\newcommand{\argmax}{\qopname\relax m{argmax}}
+
+\newcommand{\under}{\underline}
+
+\newcommand*{\msSet}[1]{\under{\ms{#1}}}       % Underlying set of measurable space
+
+% Lagrangian
+\newcommand{\Lag}{\mathcal{L}}
+
+% Expectation of action
+\newcommand{\ES}{\mathbb{S}}
+
+% Sobolev Space:
+\newcommand{\Sobolev}{\operatorname{W}}
+
+% Derivatives
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\D}[2][]{\frac{\dd #1}{\dd #2}}
+% Derivative evaluated at a particular point
+\newcommand{\Deval}[3][]{\ensuremath{\left. \D[#1]{#2} \right|_{#3}}}
+% Partial Derivative
+\newcommand{\partialD}[2][]{\frac{\partial #1}{\partial #2}}
+% Gradient
+\newcommand{\grad}{\nabla}
+
+% Integrals
+% usage: \integ{lower}{upper}{variable}{integrand}
+\newcommand{\integ}[4]{\int_{#1}^{#2} {#4} \, \dd {#3}}
+
+% Decorations
+\newcommand{\twid}[1]{\widetilde{#1}}
+
+% Units
+\newcommand{\Dollar}{\mathsf{\$}}
+\newcommand{\Time}{\mathsf{s}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Smart Length Arrows  %
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\lto}{\mathchoice{\longrightarrow}{\rightarrow}{\rightarrow}{\rightarrow}}
+\newcommand{\lTo}{\mathchoice{\Longrightarrow}{\Rightarrow}{\Rightarrow}{\Rightarrow}}
+\newcommand{\lmapsto}{\mathchoice{\longmapsto}{\mapsto}{\mapsto}{\mapsto}}
+
+
+% % Formatting: undo ams colon crimes
+% \def\newcolon{%
+%   \nobreak\mskip2mu\mathpunct{}\nonscript\mkern-\thinmuskip{\text{:}}%
+%   \mskip 6mu plus 1 mu \relax}
+%   
+% \mathcode`\:="8000 %
+% {\catcode`:=\active \global\let:\newcolon}
+%%%%%%%%%%%%%%%%%%%
+%  Text Substack  %
+%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\newenvironment{tsubarray}[1]{%
+  \vcenter\bgroup
+  \Let@ \restore@math@cr \default@tag
+  \baselineskip\fontdimen10 \scriptfont\tw@
+  \advance\baselineskip\fontdimen12 \scriptfont\tw@
+  \lineskip\thr@@\fontdimen8 \scriptfont\thr@@
+  \lineskiplimit\lineskip
+  \check@mathfonts
+  \ialign\bgroup\ifx c#1\hfil\fi
+    \normalfont\fontsize\sf@size\z@\selectfont\ignorespaces##\unskip\hfil\crcr
+}{%
+  \crcr\egroup\egroup
+}
+\makeatother
+
+\newcommand{\tsubc}[1]{\begin{tsubarray}{c}#1\end{tsubarray}}
+
+%%%%%%%%%%%%%%%%%%
+%  Bibliography  %
+%%%%%%%%%%%%%%%%%%
+\bibliographystyle{plain}
+
+
+\title{An Overanalysis of Optimal Turnover}
+\author%
+{Brandon DiNunno\footnote{The information, views, and opinions expressed herein are solely Brandon DiNunno’s and do not necessarily represent the views of Point72 or its affiliates.  Point72 and its affiliates are not responsible for, and did not verify for accuracy, any of the information contained herein.
+}, 
+Dustin Lorshbough, 
+Tom Mainiero
+}
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+In~\cite{baldacci_2022}, the authors study a toy model of a utility function that takes into account costs due to turnover-based market impact as well as volatility concerns.
+The utility function of interest is a continuum generalization (after ignoring discount rates) of the discretized optimization problem provided in~\cite{garleanu2013dynamic}. 
+While the optimal solution of the discretized version can be phrased in terms of a first-order recurrence relation solving an associated Bellman equation, the optimal solution in~\cite{baldacci_2022} can (not surprisingly) be phrased in terms of a first order ordinary differential equation in stochastic variables: this is the statement of Theorem 1 in~\cite{baldacci_2022}.
+In this note we analyze the assumptions underpinning this theorem and the quantities involved.
+
+\begin{remark}
+    The aforementioned first order ODE is the result of a second order ODE that can be derived in at least two ways: using convex optimization as in~\cite{baldacci_2022}, or using a spruced up version of the Euler-Lagrange equations which provides the critical points for functionals adapted to the world of stochastic processes.\footnote%
+    {
+        The classic text~\cite{gelfand_1963} by Gelfand and Fomin provides a great detailed reference to the classical calculus of variations in the realm of functionals on continuously differentiable functions.
+        Many of the results in that text generalize to other realms.
+    }
+    We have not been able to uncover a rigorous treatment of an application of Euler-Lagrange equations to stochastic processes in the literature.
+    However, two related techniques do exist in the literature: 
+    \begin{itemize}
+        \item A merging of the classical calculus of variations to the theory of Sobolev spaces: see e.g.~\cite{bozhonok_2007}, the lecture notes~\cite{hajlaz}, or the rigorous textbook treatment in~\cite[Ch.~7,8]{pedregal_2024}.
+        This technique has been around for some time.
+        
+        \item The Mallaivin calculus: see the textbook treatment by ~\cite{bell_2006}
+    \end{itemize}
+    Because we are interested in working with extremizing utility functions defined with respect to Lebesgue-like integrals (rather than It\'{o} or Stratonovich integrals), the former technique is closer to the application at hand.
+    To work with stochastic processes, one must consider Sobolev functions valued in infinite-dimensional $L^{p}$-spaces of random variables, but there appears to be no obstruction: with the main issues being a careful construction of definitions.
+    In \S\ref{sec:euler_lagrange} we develop some technical notions that sketch why the Euler-Lagrange equations can be adapted to stochastic processes.
+\end{remark}
+\subsection*{Outline}
+\begin{enumerate}
+    \item In \S\ref{sec:motivation} we provide some motivation for the toy model under consideration; 
+    
+    \item In \S\ref{sec:heuristics} we study the deterministic, single asset version of the main problem at hand; 
+    providing a derivation and verification of of the first order ODE in \S\ref{sec:heuristics} in this context.\footnote
+    {
+        In~\cite[Ch.~11.9]{paleologo_2021} a study of the optimal solution, in the simplified context where $\mu$ is a constant, is performed.
+        The analysis there is additionally performed at a finite time horizon.
+    }
+    In \S\ref{sec:square_integrability_failure}, we discover that the first order ODE can bring us outside of the domain where the utility function is finite. 
+    Because the argument presented in \S\ref{sec:square_integrability_failure} is robust against generalizations to stochastic processes, we conclude that there is a missing assumption in~\cite[Thm.~1]{baldacci_2022} (namely, that given by~\eqref{eq:mu_constraint}).\footnote%
+    {
+        In practice, however, this appears to be a mathematical, rather than practical issue.
+        One can likely provide a mathematical precise understanding of the first order ODE by developing a theory of optimal solutions with unbounded utility through some limiting procedures at the expense of some complexity.
+    }
+    
+    \item In \S\ref{sec:hold_or_sell} and \S\ref{sec:utility_function_discounting}, we explore some miscellaneous interesting notions using deterministic, single-asset heuristics.
+    
+    \item In \S\ref{sec:a_careful_study_of_action_functional} we revisit the our action/utility functional in the stochastic realm with mathematical care: defining everything as explicitly as possible.
+    The action/utility function studied in this section is slightly more general than that studied in~\cite{baldacci_2022}, allowing for a discount rate as in the discrete-time version presented in ~\cite{garleanu2013dynamic}.
+    
+    \item In \S\ref{sec:optimal_solutions}, and \S\ref{sec:solutions_to_2nd_order_ODE} we derive and study solutions to the second order ODE required for optimal solutions.
+
+    \item In \S\ref{sec:technical_issues} we discuss miscellaneous hyper-technical issues; and why they are not issues.
+
+    \item In \S\ref{sec:technical_notions} and \S\ref{sec:euler_lagrange}, we develop some technical notions that sketch why the Euler-Lagrange equations can be adapted to stochastic processes.
+\end{enumerate}
+
+\section{Motivation}%
+\label{sec:motivation}
+Let $x$ be a stochastic process valued in a vector space of assets: for any time $t$, the $i$th component of $x_{t}$ denotes holdings in the $i$th asset at time $t$ (negative holdings indicating a short position); $x$ is assumed to be (almost everywhere) differentiable with respect to time.
+We will consider an accessible toy model where the variation in asset holdings, $x$ in units of $\Dollar$ (see~\S\ref{sec:units}), is small relative to the overall holdings within a given time window: explicitly, $\lim_{t\rightarrow\infty}\left[\E(\dot{x}_t)/\E(x_t)\right]$ is a well defined quantity.
+
+Our model will be a continuum model, where the proper notion of return asset $i$ over an infinitesimally small time window is given by a unitless differential quantity (technically a measure):
+\begin{equation*}
+    (\mu_t)_{i} \dd t = (\dd \text{Price}_{i})/(\text{Price}_{i}),
+\end{equation*}
+where $\mu_{t}$ is a stochastic process valued in the vector space of assets.
+The inner product $\mu_{t} \cdot x_{t}$, which is a $\Real$-valued quantity with units of $\Dollar$ per unit of time, provides us with the expected estimated value of our returns per unit time.
+This gives us the most obvious contribution to our toy model utility function.
+
+The remaining terms are less exciting: we will conservatively assume all market price movement and volatility decreases our overall utility function (which includes expected earnings as well as quantifiable tangibles and possible non-tangibles).
+If we assume an infinite time horizon, and let $\expect$ denote expected value, then the utility extracted from a holdings strategy $x$ will take the form of
+\begin{equation}
+    \expect \int_0^\infty
+    \left[
+        f_{\text{ValueRate}}(x_{t})
+        \underbrace{-f_{\text{PriceChange}}(x_{t})-f_{\text{VolatilityPenalty}}(x_{t})}_{%
+            \mathclap{\textcolor{gray}{\text{Penalty Terms}}}
+        }
+    \right] 
+    \dd t,
+    \label{eq:utility_general_form}
+\end{equation}
+where, we have:\footnote{
+    Here $\mu_{t} \cdot x_{t}$ denotes a dot product/inner-product of vectors.
+    In later sections we will denote this as $\langle \mu_{t}, x_{t} \rangle_{\hs{A}}$, where $\hs{A}$ denotes the Hilbert space of assets.
+}
+\begin{equation}
+    f_{\text{ValueRate}}(x_{t}) \coloneqq \mu_{t} \cdot x_{t},
+    \label{eq:econ_term}
+\end{equation}
+and the (non-positive valued) toy-model penalty terms are given as
+\begin{align}
+        f_{\text{PriceChange}}(x_{t}) &\coloneqq \frac{1}{2} (\dot{x}_{t})^{T} \Lambda \dot{x}_{t}, 
+        \label{eq:variance_penalty}\\
+        f_{\text{VolatilityPenalty}}(x_{t}) &\coloneqq \frac{\kappa}{2}(x_t)^T \Omega x_t \label{eq:backreaction_penalty},
+\end{align}
+for some positive-definite matrix $\Lambda$ that encapsulates market impact, a positive-definite matrix $\Omega$ derived from a covariance matrix for returns, and a non-negative risk-aversion parameter $\kappa > 0$.
+
+% We would like to maximize our expected return value by varying our holdings over time while accounting for the expected market impact in the small fluctuations limit as previously discussed.
+% We will assume all market price movement and volatility decreases our overall utility function (which includes expected earnings as well as quantifiable non-tangibles).
+% In general this will not be true, there will be market movement and volatility which may benefit us, but we wish to determine the optimal strategy for the worst case scenario.  
+
+This note is about a study of the following utility maximization problem and its generalizations:
+\begin{equation}
+    \max_{x}\E\int_0^\infty
+    \left[
+        \mu_t \cdot x_t
+        -\frac{1}{2}\dot{x}_t^T \Lambda \dot{x}_t
+        -\frac{\kappa}{2}x_t^T \Omega x_t
+    \right] 
+    \dd t.
+\end{equation}
+
+\begin{remark}[(A Lack of) Realism]
+    In fact, the quadratic market impact term corresponding to $\Lambda$ is derived upon the assumption of linear price impact (see, e.g.,~\cite{almgren_2001}).
+    But as~\cite{baldacci_2022} and references therein indicate, the price impact for large orders is proportional to the square root of the order size; 
+    so our toy model is, as the name suggests, just a toy; nevertheless as~\cite{baldacci_2022} mention, it provides a good model for explicit formulae and may provide important bounds for realistic models.
+    
+    It is also somewhat worth noting that, to ``leading order'', the variational calculus ``taylor-series" expansion of any reasonably behaved utility function about certain solutions---including slowly-varying holdings sufficiently near the trivial solution $x_{t} = 0$---takes on a form similar to~\eqref{eq:utility_general_form} with summands of the form~\eqref{eq:econ_term}--\eqref{eq:variance_penalty} (although their interpretations may vary and there may be a term linear in $\dot{x}$).
+    Of course, most trading is going to occur far from this regime---yet, as good physicists, we might be curious exactly under what conditions this kind of toy-model breaks down in the utopia where our only issues are mathematical in nature.
+    
+    The market impact term assumes the form of the holdings value change with time, $\dot{x}_t$ [\$/time] weighted by a market impact coefficient matrix $\Lambda$ (units of [time/$\Dollar$]).
+    The volatility penalty term assumes a quadratic form in holdings value $x_t$ (units of $\Dollar$) weighted by the volatility $\kappa \Omega$ (units of 1/($\Dollar \cdot$ time)]).
+    Terms proportional to higher derivatives of $x_t$ as well as higher order terms such as $\propto x_t^4$ and so on, for the case of small holdings and small fluctuations these terms will be subdominant.  
+    However, if our holdings grow significantly or fluctuations begin to grow such that $(\ddot{x}\Delta t\sim\dot{x})$ or $(\Omega\sim\dot{x}_t/x_t^2)$, this assumption would need to be revisited.
+\end{remark}
+
+% Quadratic cost due to price impact can be thought of as a corollary of an assumption that the price impact of orders is linear 
+
+
+% The market price change term assumes the form of the holdings value change with time, $\dot{x}_t$ [\$/time] weighted by a market impact coefficient matrix $\Lambda$ [time/\$].  The volatility penalty term assumes a quadratic form in holdings value $x_t$ [\$] weighted by the volatility $\Omega$ [1/(\$$\cdot$time)].  One may wonder about terms proportional to higher derivatives of $x_t$ as well as higher order terms such as $\propto x_t^4$ and so on, for the case of small fluctuations these terms will be subdominant.  However, if fluctuations begin to grow such that $(\ddot{x}\Delta t\sim\dot{x})$ or $(\Omega\sim\dot{x}_t/x_t^2)$, this assumption would need to be revisited.
+
+\begin{remark}[Square Integrability Conditions]%
+\label{rem:square_integrability}
+    In order for the utility function to remain finite we must have the square integrability conditions:
+    \begin{align*}
+        \int_{0}^{\infty} x_{t} \cdot x_{t} \, \dd t &< \infty,\\
+        \int_{0}^{\infty} \dot{x}_{t} \cdot \dot{x}_{t} \, \dd t &< \infty.
+    \end{align*}
+    Moreover, because $\int_{0}^{\infty} \mu_{t} \cdot x_{t}$ must remain finite, we can use the Cauchy-Schwarz inequality to determine that we need that $\mu$ must satisfy the square integrability condition:
+    \begin{equation*}
+        \int_{0}^{\infty} \mu_{t} \cdot \mu_{t} \, \dd t < \infty.
+    \end{equation*}
+
+    In some sense, these conditions are trivially satisfied since we are always truly working with finite time horizons and $\{x_t,\dot{x}_t,\mu_t\}$ are related to monetary values.
+    For example, the entire market cap of the S\&P 500 is currently measured in tens of trillions, $10^{13}$, and the duration of holdings is limited by the lifespan of the holding individual or entity, $\sim 10^2$ years. 
+    If we are truly ambitious, we can take our time horizon out to the heat death of the universe (a measly $~10^{106}$ years).
+    
+    On the other hand it is still worth considering these issues for the pure purposes of checking mathematical consistency and validity: ensuring that no strange phenomena occur as our time horizons grow larger.
+    For more realistic models, violations of finiteness conditions can also be warnings of possible issues that may arise in implementation: e.g.\ numerical instabilities or integer overflow.
+\end{remark}
+
+\section{Heuristically Determining a First Order ODE}%
+\label{sec:heuristics}
+In this section, we gain some intuition by working with a single asset and assuming all quantities are deterministic: specifically
+\begin{itemize}
+    \item $x$ and $\mu$ will be functions $\NNReal \lto \Real$.
+
+    \item $x$ will be continuously differentiable with derivative $\dot{x}$;
+
+    \item $\mu$ will be measurable;
+
+    \item $\Gamma$ and $\Omega$ will be positive real numbers.
+\end{itemize}
+Despite these assumptions, much intuition can be gained about the general scenario of stochastic processes valued in a vector space of assets.
+In fact, the important formulae that we derive will translate nearly verbatim with a re-interpretation of $x, \mu$ as vector-valued stochastic quantities and  $\Gamma$ and $\Omega$ as positive-definite matrices.
+
+\begin{remark}
+    Using the techniques of~\cite{pedregal_2024}, the continuity assumptions on $x$ and $\mu$ can be dropped for measurability and integrability constraints.
+    Moreover, we can relax the conditions on derivatives of $x$ to the existence of a weak derivative.
+    Although having a weak derivative is, in general, different than being almost everywhere differentiable, it is a well-known fact that every square-integrable function with square integrable weak derivative is almost everywhere differentiable: this will be the case for $x$.
+\end{remark}
+
+\begin{remark}
+    See~\cite[Ch.~11]{paleologo_2021} for a detailed study of in the simplified scenario where $\mu$ is a constant $\alpha$.
+\end{remark}
+
+\subsection{A deterministic setup}
+Explicitly the utility function for an infinite time-horizon assumes the form
+\begin{equation*}
+    \ES[x] \coloneqq \int_{0}^{\infty} \Lag[x_{t}, \dot{x}_{t}] \, \dd t
+\end{equation*}
+where:
+\begin{equation}
+    \Lag[x_{t}, \dot{x}_{t}] = \mu_t x_t-\frac{1}{2}\Lambda \dot{x}^2-\frac{1}{2}\kappa\Omega x_t^2.
+    \label{eq:deterministic_lag}
+\end{equation}
+Of course, it is important to consider the \emph{domain} of $\ES$.
+To see what a reasonable domain might be, we look for conditions where the integral of the absolute value of each summand in~\eqref{eq:deterministic_lag} is finite: in other words, each term defines a representative of an element in $\RV^{1}(0,\infty)$.
+This gives us the following square-integrability constraints on $x$ and its derivative:
+\begin{align*}
+    \integ{0}{\infty}{t}{x^2} &< \infty\\
+    \integ{0}{\infty}{t}{\dot{x}^2} &< \infty.
+\end{align*}
+In other words, $x$ must determine an element of in the Sobolev space $\Sobolev^{1,2}(\NNReal)$.
+Furthermore, we wish for the term $\integ{0}{\infty}{t}{|\mu_{t} x_{t}|}$ to remain finite; 
+thinking of this as an inner product we can use the Cauchy-Schwarz inequality to determine that we must have:
+\begin{align*}
+    \integ{0}{\infty}{t}{\mu^2} &< \infty.
+\end{align*}
+We wish to optimize $\ES$ when it is constrained to the space of paths with a boundary/initial condition at time $0$.
+
+Note that for any $\alpha \in (0,1)$ and any $x$ and $y$ in the domain of $\ES$ with $x \neq y$, one can verify that
+\begin{equation}
+    \ES[\alpha x + (1 - \alpha) y] > \alpha \ES[x] + (1 - \alpha) \ES[y],
+\end{equation}
+in other words $\ES$ is a strictly concave function (equivalently, $-\ES$ is a strictly convex function).
+Through basic convexity theory, if such functions have a maximum it is unique.
+Moreover, any critical point computed using the variational calculus must be a maximum (see~\cite[Ch.~1]{gelfand_1963}).
+Consequently, it suffices to study the critical points of $\ES$.
+
+% See~\cite[1.3, Thm.~2]gelfand_1963} -- extremum => vanishing variational deriative.
+
+\subsection{Critical Points}
+The critical points in this deterministic world are given by solutions to the Euler-Lagrange equations:
+\begin{equation*}
+    \partialD{x_{t}}[\Lag] = \D{t} \partialD{\dot{x}_{t}}[\Lag].
+\end{equation*}
+This reduces to the second order differential equation:\footnote%
+{
+    A priori $x$ is not twice differentiable.
+    However, the optimal solution is twice differentiable with an explicit formula for $\ddot{x}$ in terms of first and second order partial derivatives of $\Lag$.
+}
+\begin{equation}
+    \mu_t-\kappa \Omega x_t=-\Lambda \ddot{x}_t.
+    \label{eq:EL_heuristic_reduce}
+\end{equation}
+
+The equation~\eqref{eq:EL_heuristic_reduce} has at most one valid solution given our two boundary conditions.
+As an ansatz to help us find a solution to~\eqref{eq:EL_heuristic_reduce}, we try:
+\begin{equation}\label{eq:ansatz}
+    \dot{x}_t=-\Gamma x_t+b_t.
+\end{equation}
+for some constant $\Gamma$ and function $b \colon \NNReal \to \Real$ that we must solve for in terms of $\Omega, \, \Lambda$ and $\mu_{t}$.
+The ansatz~\eqref{eq:ansatz} constrains the rate of change of our holdings to be proportional to the current holdings value plus a correction term, $b_{t}$, that we will discover is related to the forecasted future behavior of $\mu$.
+
+We will use this second order ODE along with our ansatz to derive explicit forms for $b_{t}$ and $\Gamma$.
+By assumption of our ansatz: 
+\begin{equation}
+    \ddot{x}_t=-\Gamma(-\Gamma x_t+b_t)+\dot{b}_t=\Gamma^2 x_t-\Gamma b_t+\dot{b}_t.
+    \label{eq:ansatz_double_derivative}
+\end{equation}
+%which we may use to substitute into the above equation.
+%However, for the sake of simplicity, assume that $b_{t}$ varies slowly so that 
+%\begin{equation}
+%    \dot{b}_{t} \approx 0,
+%    \label{eq:assume_slowly_varying_bt}
+%\end{equation}
+Thus, substituting~\eqref{eq:ansatz_double_derivative}  into~\eqref{eq:EL_heuristic_reduce}, we have:
+\begin{equation*}
+    \mu_t-\kappa \Omega x_t = -\Lambda \Gamma^2 x_t+\Lambda \Gamma b_t - \Lambda \dot{b}_{t},
+\end{equation*}
+rewriting this:
+\begin{align*}
+    0 
+    &= {\color{blue}{\mu_t}}
+    -{\color{olive}{\kappa \Omega x_t}}
+    +{\color{olive}{\Lambda \Gamma^2 x_t}}
+    -{\color{blue}{\Lambda \Gamma b_t}}
+    +{\color{blue}{\Lambda \dot{b}_t}},\\
+    % Collect terms
+    &= 
+    \left(
+    {\color{olive}{\Lambda \Gamma^2}} 
+    -{\color{olive}{\kappa \Omega x_t}} 
+    \right)
+    x_{t}
+    + 
+    \left(
+    {\color{blue}{\mu_t}} 
+    -{\color{blue}{\Lambda \Gamma b_t}}
+    +{\color{blue}{\Lambda \dot{b}_t}}
+    \right).
+\end{align*}
+One possible way to enforce this condition is to enforce that the terms in the parentheses vanish: this will provide us with relations that allow us to solve for $\Gamma$ and $b_{t}$ in terms of the input parameters: $\kappa, \Lambda$ and $\Omega$; and input data: $\mu_{t}$.
+Enforcing that the terms multiplying $x_{t}$ vanish, we have:
+\begin{equation*}
+    0 =  {\color{olive}{\Lambda \Gamma^2}} 
+        -{\color{olive}{\kappa \Omega x_t}} 
+        \implies 
+        {\color{olive}{\Gamma=\sqrt{\kappa\Lambda^{-1}\cdot\Omega}}}.
+\end{equation*}
+Enforcing that the remainder terms vanish provides us with a first order non-homogenous ODE for $b_{t}$:
+\begin{equation}
+    0 =  {\color{blue}{\mu_t}} 
+        -{\color{blue}{\Lambda \Gamma b_t}}
+        +{\color{blue}{\Lambda \dot{b}_t}}.
+    \label{eq:bt_ode}
+\end{equation}
+Combining the square integrability conditions discussed in Remark~\ref{rem:square_integrability}, with the ansatz~\eqref{eq:ansatz}, we require that our solution of~\eqref{eq:bt_ode} satisfy the square integrability condition:
+\begin{equation}
+    \int_{0}^{\infty} b_{t} \cdot b_{t} \, \dd t < \infty.
+    \label{eq:b_t_square_integrability}
+\end{equation}
+The equation for $b_t$ ~\eqref{eq:bt_ode} has has general solution:
+\begin{equation*}
+    b^{\mathrm{gen}}_{t} = C e^{\Gamma t} -  \int_{t}^{\infty} e^{-\Gamma (s - t)} \Lambda^{-1} \mu_{s} \, \dd s.
+\end{equation*}
+The first summand is a solution to the homogenous version of~\eqref{eq:bt_ode}, and the second summand is a particular solution with cleverly chosen bounds which are adapted to the required behavior of $b_{t}$ as $t \rightarrow \infty$: indeed, the square-integrability condition ~\eqref{eq:b_t_square_integrability} requires that $b_{t} \rightarrow 0$ as $t \rightarrow \infty$; 
+so, because $\Gamma > 0$, the only possible value for $C$ is $0$, we have:
+\begin{equation}
+    b_{t} = \int_{t}^{\infty} e^{-\Gamma (s - t)} \Lambda^{-1} \mu_{s} \, \dd s.
+    \label{eq:bt_solution}
+\end{equation}
+A change of variables $(\lambda = s-t)$ lets us rewrite this as:
+\begin{equation}
+    b_{t} = \int_{0}^{\infty} e^{-\Gamma \lambda} \Lambda^{-1} \mu_{\lambda + t} \, \dd \lambda.
+    \label{eq:bt_solution_rewrite}
+\end{equation}
+\begin{remark}
+Recall that our ansatz provides our optimal temporal change in holdings as $\dot{x}_t=-\Gamma x_t+b_t$.  The presence of the integration to infinity of $\mu_{s+t}$ for any given timestep $t$ becomes impractical, since we do not the know the future return ratio rate $\mu_{t>t_{\text{now}}}$.  However, later values are exponentially deweighted by the $e^{-\Gamma\lambda}$ term thereby exponentially reducing the numerical impact of imperfect $\mu_t$ future estimations.  In the limit of large $\Gamma$ the term $\lambda\approx0$ numerically dominates the integral and we find $b_t\approx \Gamma^{-1}\Lambda^{-1}\mu_t$.
+\end{remark}
+\begin{remark}
+    If we are to carefully consider $\mu$ as a vector-valued stochastic quantity, then~\eqref{eq:bt_solution} is replaced by:
+    \begin{equation*}
+        b_{t} = 
+        \int_{t}^{\infty} 
+        e^{-\Gamma (s - t)} \Lambda^{-1} \expect_{t} \mu_{s}
+        \, \dd s,
+    \end{equation*}
+    where $\expect_{t}$ is the conditional expectation taking into account all information at times $\leq t$.
+    This is the expression derived in~\cite{baldacci_2022}.
+    The change of variables version~\eqref{eq:bt_solution_rewrite} is more appropriately given by:
+    \begin{equation*}
+        b_{t} 
+        = 
+        \int_{0}^{\infty} e^{-\Gamma s} \Lambda^{-1} \expect_{t} \mu_{s + t} \, \dd s.
+    \end{equation*}
+\end{remark}
+The square-integrability condition~\eqref{eq:b_t_square_integrability} is then equivalent to the requirement that:
+\begin{equation}
+    \int_{0}^{\infty} 
+    \left[
+        \int_{0}^{\infty} e^{-\Gamma s} \Lambda^{-1} \mu_{s + t} \, \dd s 
+    \right]^2 \, \dd t < \infty.
+    \label{eq:mu_constraint}
+\end{equation}
+
+
+\subsection{Consistency of the First Order ODE} 
+It is not guaranteed that the first order ODE ansatz~\eqref{eq:ansatz} to give a valid solution within the domain of finite action/utility.
+In \S\ref{sec:square_integrability_failure} we first demonstrate that this ansatz fails to remain within this domain due to a failure of square integrability of $b$: the issue lies with the late-time behavior of $\mu$: see Example~\ref{ex:mu_late_time_issues}.
+The remainder of \S\ref{sec:square_integrability_failure} is dedicated to a derivation of the statement of Lemma~\ref{lem:finiteness_sufficiency}, which provides a sufficient condition for square integrability of $b$. 
+In \S\ref{sec:bt_bounds} we describe that, despite the failure of square integrability, one can derive certain bounds on $|b_{t}|$.
+
+
+\subsubsection{Failure of Square Integrability}%
+\label{sec:square_integrability_failure}
+For the purposes of this section, define the (positive definite) bilinear pairing on (Lebesgue measurable) functions $x,y \colon \NNReal \lto \Real$ by:
+\begin{equation*}
+    \langle x,y \rangle_{\hs{S}} \coloneqq \int_{0}^{\infty} x_{t} y_{t} \, \dd t.
+\end{equation*}
+and define the norm:
+\begin{equation*}
+    \|x \|_{\hs{S}} \coloneqq \sqrt{\langle x , x \rangle}.
+\end{equation*}
+The subscript ``$\hs{S}$'' is in reference to an appropriate Hilbert space of stochastic processes (even though we are considering deterministic processes at the moment).
+Square integrability of a function $y$ is then the statement that $\|y\|_{\hs{S}} < \infty$.
+
+Note that, with the first order ansatz~\eqref{eq:ansatz}, we have:
+\begin{align*}
+    \langle \dot{x}, \dot{x} \rangle_{\hs{S}} 
+    = 
+    \langle x, x \rangle_{\hs{S}}
+    +
+    2\langle x, b \rangle_{\hs{S}}
+    + 
+    \langle b, b \rangle_{\hs{S}}.
+\end{align*}
+Thus, in order for $\dot{x}$ to be square integrable, it is necessary (and, by the Cauchy-Schwarz inequality sufficient) that both $x$ and $b$ are square integrable.
+By assumption $x$ is square integrable, so we need to check that $b$, as defined by~\eqref{eq:bt_solution} or~\eqref{eq:bt_solution_rewrite} is square integrable in order for the first order ODE ansatz~\eqref{eq:ansatz} to give an honest optimal solution that remains within the domain of our utility functional.
+Unfortunately, as we discover, square integrability of $b$ can fail depending on the behavior of $\mu$.
+
+Indeed, we can express $(\|b\|)^{2}$ as:
+\begin{align}
+    (\|b \|_{\hs{S}})^{2} 
+    &= 
+    \Lambda^{-2}
+    \int_{0}^{\infty} 
+    \left[
+        \int_{t}^{\infty} e^{-\Gamma (s - t)} \mu_{s} \, \dd s 
+    \right]^2 \, \dd t. \nonumber
+    \\
+    &=
+    \Lambda^{-2}
+    \int_{0}^{\infty} 
+    e^{2\Gamma t}
+    \left[
+        \int_{t}^{\infty} e^{-\Gamma s} \mu_{s} \, \dd s 
+    \right]^2 \, \dd t.
+    \label{eq:bt_norm_explicit}
+\end{align}
+This makes constructing an example of failure for square integrability straightforward.
+
+\begin{example}
+    Let $\mu_{t} = \exp(-\Gamma t)$, because
+    \begin{equation}
+        \int_{t}^{\infty} e^{-\Gamma s} \mu_{s} \, \dd s  = \frac{1}{\Gamma} e^{-\Gamma t}
+    \end{equation}
+    it is easy to see using~\eqref{eq:bt_norm_explicit} that $\|b\| = \infty$.
+\end{example}
+
+Divergence of $\|b\|$ is related to the late time behavior of $\mu$, as the following example makes explicit.
+\begin{example}%
+\label{ex:mu_late_time_issues}
+    Let $T \in \NNReal$ and $f \colon [0, T) \rightarrow \Real$ be an arbitrary measurable function; 
+    define:
+    \begin{equation*}
+        \mu_{t} \coloneqq
+        \begin{cases}
+            f & \text{if $0 \leq t \leq T$}\\
+            e^{-\Gamma t} & \text{if $t > T$}
+        \end{cases}
+    \end{equation*}
+    Then it is straightforward to demonstrate that the associated $b$ has $\|b\| = \infty$.
+\end{example}
+
+This gives some very rough intuition that, if $\mu$ were to remain (mostly) positive for all times, $\|b\|$ is only finite when $\mu$ \emph{eventually} decays ``faster than $\exp(-\Gamma t)$''.
+Putting tight, explicit bounds to the words in vague-quotes is likely a doomed effort for the same reasons one cannot bound the decay rate for a square integrable function.
+On the other hand, we can attempt to derive a simpler constraint on the tail behavior of $\mu$ that is sufficient to guarantee that $\|b\|$ remains finite so that our first order ODE provides an optimal solution that remains in the domain of finite total action/utility.
+
+We can rewrite the expression in a more enlightening way by observing that
+\begin{equation}
+    \left(
+        \int_{t}^{\infty} e^{-\Gamma s} \mu_{s} 
+    \, \dd t
+    \right)^{2}
+    =
+    (\langle \varepsilon^{[>t]}, \mu^{[>t]} \rangle)^2
+\end{equation}
+where the function $\varepsilon^{[>t]}$ is defined as:
+\begin{equation}
+    \begin{aligned}
+        \varepsilon^{[>t]} \colon \NNReal &\to \Real\\
+        s &\mapsto 
+        \begin{cases} 
+            e^{-\Gamma s} & s > t \\
+            0 & s \leq t
+       \end{cases}
+    \end{aligned}
+\end{equation}
+and the function $\mu^{[>t]}$ is defined as:
+\begin{equation}
+    \begin{aligned}
+        \mu^{[>t]} \colon \NNReal &\to \Real\\
+        s &\mapsto 
+        \begin{cases} 
+            \mu_{t} & s > t \\
+            0 & s \leq t
+       \end{cases}.
+    \end{aligned}
+    \label{eq:mu_lower_truncated}
+\end{equation}
+so
+\begin{equation}
+    (\|b\|_{\hs{S}})^2
+    = 
+    \Lambda^{-2}
+    \int_{0}^{\infty} 
+    e^{2\Gamma t}
+    \left(
+        \langle \varepsilon^{[>t]}, \mu^{[>t]} \rangle_{\hs{S}}
+    \right)^2
+    \, \dd t.
+\label{eq:norm_b_as_integral_of_inner_product}
+\end{equation}
+Both $\varepsilon^{[>t]}$ and $\mu^{[>t]}$ are square integrable, and by the Cauchy-Schwarz inequality, we have\footnote%
+{
+    The inequality~\eqref{eq:truncated_cauchy_schwarz} is saturated and only if $\mu^{[>t]} = C \varepsilon^{[>t]}$ for some constant $C$): this is leads to the situation of Example~\ref{ex:mu_late_time_issues}.
+}
+\begin{equation}
+    (\langle \varepsilon^{[>t]}, \mu^{[>t]} \rangle_{\hs{S}})^2 \leq \|\varepsilon^{(t)}\|_{\hs{S}} \|\mu^{[>t]} \|_{\hs{S}}
+    \label{eq:truncated_cauchy_schwarz}
+\end{equation}
+Moreover,
+\begin{equation}
+    \| \varepsilon \|_{\hs{S}} 
+    = \sqrt{
+            \int_{t}^{\infty} e^{-2 \Gamma s} \, \dd s 
+        }
+    = \frac{e^{-\Gamma t}}{\sqrt{2\Gamma}}.
+\end{equation}
+Combining~\eqref{eq:truncated_cauchy_schwarz} with~\eqref{eq:norm_b_as_integral_of_inner_product} gives us the following Lemma.
+
+\begin{lemma}%
+\label{lem:finiteness_sufficiency}
+Let $\mu^{[>t]}$ denote the lower truncation of $\mu$ for times $\leq t$ (as defined explicitly in~\eqref{eq:mu_lower_truncated}), then 
+    \begin{equation*}
+        (\|b\|_{\hs{S}})^2 
+        \leq 
+        \frac{1}{\Lambda^{2}\sqrt{2 \Gamma}} 
+        \int_{0}^{\infty} e^{\Gamma t} \|\mu^{[>t]} \|_{\hs{S}} \, \dd t.
+    \end{equation*}
+\end{lemma}
+
+\subsubsection{Bounds on \texorpdfstring{$b_{t}$}{bt}}%
+\label{sec:bt_bounds}
+In \S\ref{sec:square_integrability_failure}, we demonstrated that, sometimes $b_{t}$ is not square integrable. 
+Nevertheless, this section is devoted to showing that $b$ always eventually decays for square integrable $\mu$.
+Remark~\ref{rem:decay_for_general_mu} discusses bounds on $|b_{t}|$ for $\mu$ that may not be square integrable: in particular, $b$ is bounded\footnote%
+{
+    Almost everywhere bounded in the stochastic translation.
+}
+even for $\mu$ growing exponentially at rates $\gamma < \Gamma$.
+
+Because $\mu_{t}$ is square-integrable, we must have that $\mu_{t} \rightarrow 0$ as $t \rightarrow \infty$;
+hence, for any constant $\epsilon > 0$ there exists some time $T_{\epsilon}$ with $|\mu_{t}| < \epsilon$ for all $t > T_{\epsilon}$.
+Thus, using~\eqref{eq:bt_solution}, for all $t > T_{\epsilon}$ we have:
+\begin{align}
+    |b_{t}| &= 
+    \left|
+        \integ{0}{\infty}{s}{%
+        e^{-\Gamma s} \Lambda^{-1} \mu_{s + t}
+    }
+    \right| \nonumber
+    \\
+     &\leq 
+    \integ{0}{\infty}{s}{%
+    \left|
+        e^{-\Gamma s} \Lambda^{-1} \mu_{s + t}
+    \right|
+    } \nonumber
+    \\
+   &\leq
+    \integ{0}{\infty}{s}{%
+        e^{-\Gamma s} \left| \Lambda^{-1} \mu_{s + t} \right|
+    } \label{eq:bt_bound_general}
+    \\
+    &=
+    \left[%
+    \epsilon \integ{0}{\infty}{s}{%
+        e^{-\Gamma s}
+    }
+    \right]
+    \Lambda^{-1} 
+    . \nonumber
+\end{align}
+Computing the integral, we finally have:
+\begin{equation}
+    |b_{t}| \leq \epsilon \Gamma^{-1}\Lambda^{-1}, \quad \forall t > T_{\epsilon}.
+    \label{eq:bt_bound}
+\end{equation}
+which gives an upper bound of the magnitude of $|b_{t}|$ in terms of the magnitude of $\mu_{t}$. 
+
+\begin{remark}%
+\label{rem:decay_for_general_mu}
+    The inequality~\eqref{eq:bt_bound_general} makes it clear that if we were to somehow argue that we can extend the ansatz~\eqref{eq:ansatz} outside of the domain of square-integrable functions, we will still always have the inequality
+    \begin{equation*}
+        |b_{t}|  \leq 
+        \integ{0}{\infty}{s}{%
+            e^{-\Gamma s} \left | \Lambda^{-1} \mu_{s + t} \right|
+        }.
+    \end{equation*}
+    Thus, if $|\mu_{t}| \leq C \exp(\gamma t)$ for some constant $C$ and some $\gamma < \Gamma$ for all times $t \geq 0$, then $|b_{t}| \leq \Lambda^{-1} (\Gamma - \gamma)^{-1}$ for all times $t \geq 0$.
+\end{remark}
+
+
+% For $\mu_t$ as a Wiener process, the time evolution takes the form of Gaussian increments
+% \begin{equation}
+%     \mu_{t+\Delta}-\mu_t\approx N(0,\Delta).
+% \end{equation}
+% Therefore $\mu_t$ is expected to exhibit random walk behavior, hence the exponential temporal suppression of $\dot{b}_t$ will make it numerically small.  As long as the growth rate of $\mu_{t}$ is eventually slower than $e^{-\Gamma t}$ then ~\eqref{eq:bt_ode} requires:
+% \begin{equation*}
+%     b_t \approx \mu_t\Gamma^{-1}\Lambda^{-1}.
+% \end{equation*}
+% \tominline{I don't believe it yet. I think I might have a generic argument here, I'll type it above what you're writing}
+
+\section{Computing the Estimated Returns}
+\subsection{Rewriting \texorpdfstring{$b_t$}{bt}}
+In the previous section we have calculated the optimal turnover strategy to be of the form
+\begin{align}
+    &\dot{x}_t = - \Gamma x_t +b_t,\nonumber\\
+    &\Gamma = \left(\kappa\Lambda^{-1}\Omega\right)^{1/2},\nonumber\\
+    &b_t=\Lambda^{-1}\int_0^\infty e^{-\Gamma\lambda}\mu_{\lambda+t}d\lambda.
+\end{align}
+
+For $\mu_t$ as a Wiener process, the time evolution takes the form of Gaussian increments
+\begin{align}
+     \mu_{t+\Delta}-\mu_t\approx N(0,\Delta)=\frac{1}{\sqrt{2\pi\Delta^2}}e^{-(x-0)^2/2\Delta^2}
+\end{align}
+
+To compute the $b_t$ integral we use the above relation
+\begin{align}
+    &b_t=\Lambda^{-1}\int_0^\infty e^{-\Gamma\lambda}\mu_{\lambda+t}d\lambda=\int_0^\infty e^{-\Gamma\lambda}\left(\mu_t+N_t(0,\lambda)\right)d\lambda\nonumber\\
+    &\rightarrow b_t=\Lambda^{-1}\mu_t\int_0^\infty e^{-\Gamma\lambda}+\Lambda^{-1}\int_0^\infty e^{-\Gamma\lambda}N_t(0,\lambda)d\lambda\nonumber\\
+    &\rightarrow b_t=\Lambda^{-1}\Gamma^{-1}\mu_t+\frac{1}{2\sqrt{2}\pi}\Lambda^{-1}G_{\text{Meijer}}\left[(\{\},\{\}),(\{0,0,1/2\},\{\}),\Gamma^2t^2/8\right].
+\end{align}
+where $G_{\text{Meijer}}$ is the Meijer G-function which rapidly decays in time.
+
+To address the $G_{\text{Meijer}}$ term, we note that it decays rapidly in time and consider $\tau=\Gamma t$
+\begin{align}
+    &\text{Let }{\color{olive}{\rho_1 = 2\Gamma_{\text{Euler}}-\log(8)+2\log(\tau)-\psi^{(0)}(1/2)}}.\\
+    &\text{Let }{\color{purple}{\rho_2 = -2+2\Gamma_{\text{Euler}}-\log(8)+2\log(\tau)-\psi^{(0)}(-1/2)}}.\\
+    &\frac{1}{2\sqrt{2}\pi}G_{\text{Meijer}}\left[(\{\},\{\}),(\{0,0,1/2\},\{\}),\tau^2/8\right]\nonumber\\
+    &={\color{olive}{-\frac{\rho_1}{2\sqrt{2\pi}}+\frac{\tau}{2}}}+{\color{purple}{\frac{\rho_2}{8\sqrt{2\pi}}\tau^2}}\nonumber\\
+    &\approx {\color{olive}{-0.15 + 0.5 \tau - 0.4 \text{Log}(\tau)}}{\color{purple}{-0.15\tau^2+0.1\tau^2\log(\tau)}}.
+\end{align}
+where we have denoted the Euler Gamma function and the Polygamma function by $\Gamma_{\text{Euler}}$ and $\psi$ respectively.
+
+\subsection{Direct Computation}
+Direct computation of the holdings yields
+\begin{align}
+    \dot{x}_t&=-\Gamma x_t+b_t\nonumber\\
+    &=-\Gamma x_t+\Lambda^{-1}\Gamma^{-1}\mu_t+\frac{1}{2\sqrt{2}\pi}\Lambda^{-1}G_{\text{Meijer}}\left[(\{\},\{\}),(\{0,0,1/2\},\{\}),\Gamma^2t^2/8\right]\nonumber\\
+    %&\approx-\Gamma x_t+\Lambda^{-1}\Gamma^{-1}\mu_t+\Lambda^{-1}\left[-0.15 + 0.5 \tau - 0.4 \text{Log}(\tau)-0.15\tau^2+0.1\tau^2\log(\tau)\right]\nonumber\\
+    %&\approx-\Gamma x_t+\Lambda^{-1}\Gamma^{-1}\mu_t+\Lambda^{-1}\left[-0.15 + 0.5 \Gamma t - 0.4 \text{Log}(\Gamma t)-0.15\Gamma^2t^2+0.1\Gamma^2t^2\log(\Gamma t)\right]
+\end{align}
+
+The solution for $x_t$ is given by $x_t=x_{\text{homogeneous}}+x_{\text{particular}}$,
+\begin{align}
+    \dot{x}_{t,\text{homogeneous}}&=-\Gamma x_{t,\text{homogeneous}}\nonumber\\
+    \rightarrow x_{t,\text{homogeneous}}&= x_0 \cdot e^{-\Gamma t}.
+\end{align}
+
+For the case of a weak driving term, the solution will be nearly homogeneous, so we approximate
+\begin{align}
+\dot{x}_{t,\text{particular}}&\approx-\Gamma x_t+\Lambda^{-1}\Gamma^{-1}\mu_t\nonumber\\
+&+\frac{1}{2\sqrt{2}\pi}\Lambda^{-1}G_{\text{Meijer}}\left[(\{\},\{\}),(\{0,0,1/2\},\{\}),\Gamma^2t^2/8\right]\nonumber\\
+\rightarrow \dot{x}_{t,\text{particular}}&\approx -\Gamma\cdot x_0\cdot e^{-\Gamma t}+\Lambda^{-1}\Gamma^{-1}\mu_t\nonumber\\
+&+\frac{1}{2\sqrt{2}\pi}\Lambda^{-1}G_{\text{Meijer}}\left[(\{\},\{\}),(\{0,0,1/2\},\{\}),\Gamma^2t^2/8\right]\nonumber\\
+\rightarrow x_{t,\text{particular}}&\approx\int_0^\infty dt\left\{{\color{blue}{-\Gamma\cdot x_0\cdot e^{-\Gamma t}}}{\color{orange}{+\Lambda^{-1}\Gamma^{-1}\mu_t}}\right.\nonumber\\
+&\left.{\color{olive}{+\frac{1}{2\sqrt{2}\pi}\Lambda^{-1}G_{\text{Meijer}}\left[(\{\},\{\}),(\{0,0,1/2\},\{\}),\Gamma^2t^2/8\right]}}\right\}\nonumber\\
+&\approx{\color{blue}{-x_0}}+{\color{orange}{0}}+{\color{olive}{\frac{1}{2}\Lambda^{-1}\Gamma^{-1}}}
+\end{align}
+where we have used that $\mu_t$ has a vanishing mean value.
+
+The approximate general solution is given by
+\begin{equation}
+    x_t=x_0\left(e^{-\Gamma t}-1\right)+\frac{1}{2}\Lambda^{-1}\Gamma^{-1}
+\end{equation}
+
+The accrued earnings are therefore
+\begin{align}
+    \int_0^\infty dt\cdot \mu_t\cdot x_t&= \int_0^\infty dt\cdot \left[{\color{olive}{\mu_t \cdot x_0\cdot e^{-\Gamma t}}}-{\color{orange}{\mu_t\cdot \left(x_0+\frac{1}{2}\Lambda^{-1}\Gamma^{-1}\right)}}\right]\nonumber\\
+    &\approx {\color{olive}{x_0\cdot\left(\mu_0+\mu_\omega e^{-\Gamma \omega}+\cdots\right)\cdot\omega}}+{\color{orange}{0}}\nonumber\\
+    &\approx x_0\cdot\left(\mu_0+\mu_\omega e^{-\Gamma \omega}+\mu_{2\omega}e^{-2\Gamma \omega}\right)\cdot\omega\nonumber\\
+\end{align}
+The quantity $\omega$ is the natural time increment of $\mu_t$, perhaps one second or a fraction of a second. 
+
+\subsection{Differential Equation for the Accrued Earnings}
+
+The earnings accrued is given by
+\begin{align}
+    &S=\int_0^t \mu_t\cdot x_t\hspace*{4mm}dt\nonumber\\
+    &\rightarrow \dot{S} = \mu_t\cdot x_t\nonumber\\
+    &\rightarrow \ddot{S} = \dot{\mu}_t\cdot x_t + \mu_t\cdot\dot{x}_t\nonumber\\
+    &\rightarrow \ddot{S} = \dot{\mu}_t\cdot x_t - \mu_t\cdot\Gamma \cdot x_t+\mu_t\cdot b_t\nonumber\\
+    &\rightarrow \ddot{S} = \dot{\mu}_t\cdot x_t - \mu_t\cdot\Gamma \cdot x_t+\mu_t\cdot \int_0^\infty e^{-\Gamma\lambda}\mu_{\lambda+t}d\lambda
+\end{align}
+
+For $\mu_t$ as a Wiener process, the time evolution takes the form of Gaussian increments
+\begin{align}
+     \mu_{t+\Delta}-\mu_t\approx N(0,\Delta)=\frac{1}{\sqrt{2\pi\Delta^2}}e^{-(x-0)^2/2\Delta^2}
+\end{align}
+The time derivative $\dot{\mu}_t$ may therefore be written as
+% \tom{the Wiener process is not differentiable. There's something more subtle here.
+% https://urldefense.com/v3/__https://kfoster.ccny.cuny.edu/classes/spring2010/eco275/lecturenotes7.html__;!!K_TC0FI_KA!onokIOM2tvB38oC9bMLo47WKiOgxVV3NLEExpO7I_1hZ8XwLqd70XL4vnh8jNNkMbDCRG0U-jPVXAJb_kOzZPmriDtoP$
+% }
+%I used \approx, not =.  We are basically just saying the time evolution is gaussian, and then show the finite difference time evolution. dt became \Delta t.
+%\tom{yeah, but I think there are some serious issues with contributions from "quadratic terms" in the definition of the derivative, even at an approximate level}
+
+\begin{equation}
+    \dot{\mu}_t\approx\frac{\mu_{t+\Delta}-\mu_t}{\Delta}\approx\frac{N(0,\Delta)}{\Delta}=\frac{1}{\sqrt{2\pi}\Delta^2}e^{-t^2/\sigma^2}
+\end{equation}
+ Upon substitution we find,
+\begin{align}
+    \ddot{S} =& \frac{1}{\sqrt{2\pi}\omega^2}e^{-t^2/\omega^2}\cdot x_t - \mu_t\cdot\Gamma \cdot x_t\nonumber\\
+    &+\mu_t\cdot \left[\Gamma^{-1}\mu_t+\frac{1}{2\sqrt{2}\pi}G_{\text{Meijer}}\left[(\{\},\{\}),(\{0,0,1/2\},\{\}),\Gamma^2t^2/8\right]\right]\nonumber\\
+    \rightarrow\ddot{S} =&\frac{1}{\sqrt{2\pi}\omega^2}e^{-t^2/\omega^2}\cdot x_t - \mu_t\cdot\Gamma \cdot x_t+\Gamma^{-1}\cdot \mu_t^2+\frac{1}{2\sqrt{2}\pi}\mu_t\cdot G_{\text{Meijer}}\left[\cdots\right].
+\end{align}
+where $\omega$ is the standard deviation of the $\mu_t$ Wiener Gaussian evolution.  This allows us to derive a differential equation for $S$
+\begin{align}
+    \dot{S}=&\int_0^{\infty}dt\cdot\frac{1}{\sqrt{2\pi}\omega^2}e^{-t^2/\omega^2}\cdot x_t-\Gamma\cdot S+\Gamma^{-1}\int_0^\infty \mu_t^2dt+\frac{1}{2\sqrt{2}\pi}\int_0^\infty dt\cdot\mu_t\cdot G_{\text{Meijer}}\left[\cdots\right].
+\end{align}
+We shall make the following approximation for the first term (Riemann Sum representation with $\Delta t$=$\omega$):
+\begin{align}
+    \int_0^{\infty}dt\cdot\frac{1}{\sqrt{2\pi}\omega^2}e^{-t^2/\omega^2}\cdot x_t&=\frac{1}{\sqrt{2\pi}\omega}\left(x_0+e^{-1}x_\omega+e^{-2}x_{2\omega}+\cdots\right)\nonumber\\
+    &\approx\frac{1}{\sqrt{2\pi}\omega}\left(x_0+e^{-1}x_\omega\right)
+\end{align}
+
+This acts like an enveloping function which decreases the contributions of $\mu_t$.
+
+For the integral of $\mu_t^2$, we recognize that the sum of normally distributed variables squared yields the $\chi^2$ distribution.
+\begin{align}
+    \int_0^\infty dt\cdot\mu_t^2\approx(\mu_0^2+\mu_\omega^2+\mu_{2\omega}^2+\cdots)\cdot\omega=\chi_\infty\cdot\omega
+\end{align}
+
+Collecting these approximations we find
+\begin{align}
+    \dot{S}\approx&\frac{1}{\sqrt{2\pi}\omega}\left(x_0+e^{-1}x_\omega\right)-\Gamma\cdot S+\Gamma^{-1}\chi_\infty\cdot\omega\nonumber\\
+    &+\Gamma^{-1}\int_0^\infty d\tau\cdot \mu_{\Gamma^{-1}\tau}\cdot\left[-0.15 + 0.5 \tau - 0.4 \text{Log}(\tau)-0.15\tau^2+0.1\tau^2\log(\tau)\right].
+\end{align}
+
+The Homogeneous solution is derived by noting that at time $t=0$ our accrued earnings is still zero
+\begin{align}
+    \text{Let }B&=\Gamma^{-1}\chi_\infty\cdot\omega+\frac{1}{\sqrt{2\pi}\omega}\left(x_0+e^{-1}x_\omega\right).\nonumber\\
+    \dot{S}_{\text{homogeneous}} &= -\Gamma\cdot S+B,\nonumber\\
+    \rightarrow S_{\text{homogeneous}} &= \Gamma^{-1}\cdot B+C_1 e^{-\Gamma t}\nonumber\\
+    \rightarrow S_{\text{homogeneous}} &= \Gamma^{-1}\cdot B\cdot\left(1- e^{-\Gamma t}\right)
+\end{align}
+
+The driving term is an integral over a stochastic variable with zero mean $\mu_t$ times an enveloping function $[\cdots]$.  Given the rapid oscillations of $\mu_t$ this integral approximately vanishes.  Leaving us with $S\approx S_{\text{homogeneous}}$. 
+
+\begin{equation}
+S\approx\Gamma^{-1}\cdot\left[\Gamma^{-1}\chi_\infty\cdot\omega+\frac{1}{\sqrt{2\pi}\omega}\left(x_0+e^{-1}x_\omega\right)\right]\cdot\left(1- e^{-\Gamma t}\right).
+\end{equation}
+
+\section{The Hold or Sell Threshold}%
+\label{sec:hold_or_sell}
+
+In the following sections we will discuss the concept of utility function discounting whereby we consider the time dependence of the units of $x_t$, namely the temporal variation of dollar value itself.  To motivate this discussion, consider the special case of value accrued if a portfolio is held and not sold.
+
+\begin{align}
+{\mathcal{L}} &= \mu_t\cdot x_t -\frac{1}{2}\dot{x}^T\cdot\Lambda\cdot \dot{x}-\frac{\kappa}{2}x^T\cdot\Omega\cdot x,\\
+&\approx \mu_t\cdot x_t -\frac{\kappa}{2}x^T\cdot\Omega\cdot x.
+\end{align}
+The condition for it being favorable to hold assets rather than sell is therefore given by
+\begin{align}
+\frac{\kappa}{2}\Omega\cdot x_t&<\mu_t,\\
+x_t&<\frac{2}{\kappa}\Omega^{-1}\cdot\mu_t.
+\end{align}
+Therefore, as long as our holdings at a given point in time are below a certain threshold which depends on both the fractional price change rate and the volatility it becomes preferable not to turnover our assets.
+
+It is natural to ask about the time evolution of the inequality.  That is, if we satisfy the inequality threshold for holding our assets at a particular time will be continue to satisfy the inequality.  To answer this, assume that $\mu_t$ is a stochastic variable described by Wiener process Gaussian evolution, $\mu_{t+\Delta}-\mu_t=N(0,\Delta)$.  We will assume that the characterized Volatility is time independent.  Therefore the time evolution of the inequality may be expressed as
+\begin{equation}
+    (x_{t+\Delta}-x_{t})\lesssim\frac{2}{\kappa}\Omega^{-1}N(0,\Delta)
+\end{equation}
+Since $\mu_t$ will fluctuate about $\mu=0$ there will be sporadic periods where it is advantageous to hold and sporadic periods where it is advantageous to sell.
+
+\begin{remark}
+    The presences of $(1/\kappa)$ in our hold-or-sell threshold is intuitive from our initial definition of $\kappa$ as being a risk aversion coefficient.  If $\kappa$ is small for low risk aversion, the inequality is easily satisfied for large holdings $x_t$ when $\mu_t$ is sporadically positive indicating a preference for holding.  If $\kappa$ is large for high risk aversion the inequality forces a smaller holdings $x_t$ resulting in a higher likelihood of the holder to sell. 
+\end{remark}
+
+\section{Utility Function Discounting}%
+\label{sec:utility_function_discounting}
+\subsection{Exponential Discounting}
+A utility discounting factor accounts for the fact that the value of money is not constant over time.  In particular, we can consider an exponential devaluing of money over time for illustrative purposes (see \S\ref{sec:units}):
+\begin{equation}
+    \$_t = a_t\cdot \$_{t_0}=e^{-\rho(t-t_0)}\cdot\$_{t_0}.
+\end{equation}
+To write our holdings in terms of a time independent quantity we recognize
+\begin{align}
+x_t(\$_t)&=a_t\cdot x_{t}(\$_{t_0})=e^{-\rho(t-t_0)}x_t(\$_{t_0}),\\
+\dot{x}_t(\$_t/\text{time})&=\frac{d}{dt}\left(e^{-\rho(t-t_0)}x_t(\$_{t_0}/\text{time})\right)=a_t\cdot\dot{x}_t(\$_{t_0}/\text{time})-\rho\cdot a_t\cdot x_t(\$_{t_0}),\\
+\mu_t(\$_t/\text{time})&=a_t\cdot\mu_t(\$_{t_0}/\text{time})=e^{-\rho(t-t_0)}\mu_t(\$_{t_0}/\text{time}).
+\end{align}
+This yields extra terms in our utility function given by (all monetary units given in fixed time value \$$_{t_0}$)
+\begin{align}
+    {\mathcal{L}}=&{\color{purple}{a_t^2}}\mu_t\cdot x_t-\frac{1}{2}\left[{\color{purple}{a_t}}\dot{x}_t{\color{purple}{-\rho\cdot a_t\cdot x_t}}\right]^T\cdot\Lambda\cdot\left[{\color{purple}{a_t}}\dot{x}_t{\color{purple}{-\rho\cdot a_t\cdot x_t}}\right]-\frac{\kappa}{2}{\color{purple}{a_t^2}}x^T\cdot\Omega\cdot x,\nonumber\\
+    =&{\color{purple}{a_t^2}}\mu_t\cdot x_t-\frac{1}{2}{\color{purple}{a_t^2}}\dot{x}_t^T\cdot\Lambda\cdot\dot{x}_t\nonumber\\
+    &{\color{purple}{+\frac{1}{2}a_t^2\cdot\rho\cdot x_t^T\cdot\Lambda\cdot\dot{x}_t+\frac{1}{2}a_t^2\cdot\rho\cdot\dot{x}_t^T\cdot\Lambda\cdot x_t}}\nonumber\\
+    &-{\color{purple}{\frac{1}{2}a_t^2\rho^2x_t^T\cdot\Lambda\cdot x_t}}-\frac{\kappa}{2}{\color{purple}{a_t^2}}x_t^T\cdot\Omega\cdot x_t
+\end{align}
+In the case of a single asset this becomes
+\begin{align}
+    {\mathcal{L}}=&{\color{purple}{a_t^2}}\mu_t\cdot x_t-\frac{1}{2}{\color{purple}{a_t^2}}\Lambda\cdot\dot{x}_t^2{\color{purple}{+a_t^2\rho\cdot\Lambda\cdot x_t\cdot\dot{x}_t}}-\frac{1}{2}\left({\color{purple}{a_t^2\rho^2\cdot\Lambda}}+{\color{purple}{a_t^2}}\kappa\cdot\Omega\right)x_t^2
+\end{align}
+
+Our new optimization constraint equation is given by 
+\begin{align}
+    \frac{\partial{\mathcal{L}}}{\partial x_t}=&\frac{d}{dt}\frac{\partial{\mathcal{L}}}{\partial \dot{x}_t},\nonumber\\
+    \rightarrow a_t^2\mu_t+a_t^2\rho\Lambda\dot{x}_t-a_t^2\left(\rho^2\Lambda+\kappa\Omega\right)x_t=&\frac{d}{dt}\left(-a_t^2\Lambda\dot{x}_t+a_t^2\rho\Lambda x_t\right)\nonumber\\
+    \rightarrow a_t^2\mu_t+a_t^2\rho\Lambda\dot{x}_t-a_t^2\left(\rho^2\Lambda+\kappa\Omega\right)x_t=&-2\dot{a}_ta_t\Lambda\dot{x}_t-a_t^2\Lambda\ddot{x}_t+2\dot{a}_ta_t\rho\Lambda x_t+a_t^2\rho\Lambda\dot{x}_t,\nonumber\\
+    \text{Note }\dot{a}_t =& -\rho\cdot a_t,\nonumber\\
+    \rightarrow a_t^2\mu_t+{\color{orange}{a_t^2\rho\Lambda\dot{x}_t}}-a_t^2\left(\rho^2\Lambda+\kappa\Omega\right)x_t=&2a_t^2\rho\Lambda\dot{x}_t-a_t^2\Lambda\ddot{x}_t-2a_t^2\rho^2\Lambda x_t+{\color{orange}{a_t^2\rho\Lambda\dot{x}_t}},\nonumber\\
+    \rightarrow \mu_t-\left(\rho^2\Lambda+\kappa\Omega\right)x_t=&2\rho\Lambda\dot{x}_t-\Lambda\ddot{x}_t-2\rho^2\Lambda x_t.
+\end{align}
+
+As before, we can introduce an ansatz that the time evolution for holdings $x_t$ depends on itself plus a correction term in the absence of utility discounting,
+\begin{align}
+\dot{x}_t(\$_{t_0}/\text{time})=&-\Gamma(1/\text{time})\cdot x_t(\$_{t_0})+b_t(\$_{t_0}/\text{time}).
+\end{align}
+This provides the second derivative as before,
+\begin{align}
+\ddot{x}_t=&-\Gamma\cdot \dot{x}_t+\dot{b}_t=\Gamma^2\cdot x_t-\Gamma\cdot b_t+\dot{b}_t.
+\end{align}
+The ansatz results in
+\begin{align}
+&\mu_t-\left(\rho^2\Lambda+\kappa\Omega\right)x_t\\
+&=2\rho\Lambda(-\Gamma x_t+b_t)-\Lambda(\Gamma^2\cdot x_t-\Gamma\cdot b_t+\dot{b}_t)-2\rho^2\Lambda x_t,\\
+&\rightarrow \left\{\begin{array}{c}{\color{blue}{\mu_t}}\\{\color{olive}{-\left(\rho^2\Lambda+\kappa\Omega\right)x_t}}\end{array}\right\}=\left\{\begin{array}{c}{\color{blue}{2\rho\Lambda b_t+\Lambda\Gamma b_t-\Lambda\dot{b}_t}}\\{\color{olive}{-2\rho\Lambda\Gamma x_t-\Lambda\Gamma^2x_t-2\rho^2\Lambda x_t}}\end{array}\right\}
+\end{align}
+
+The new expression for $\Gamma$ becomes:
+\begin{align}
+    &{\color{olive}{\left(\Lambda\right)\Gamma^2+\left(2\rho\Lambda\right)\Gamma -\left(\kappa\Omega-\rho^2\Lambda\right)=0}}\\
+    &{\color{olive}{\rightarrow\Gamma^2+\left(2\rho\right)\Gamma -\left(\kappa\Lambda^{-1}\Omega-\rho^2\right)=0,}}\\
+    &{\color{olive}{\rightarrow \Gamma = -\rho\pm \sqrt{\left(\kappa\Lambda^{-1}\Omega\right)}.}}
+\end{align}
+In the utility discount free limit, $\rho\rightarrow 0$, we recover $\Gamma=\sqrt{\kappa\Omega/\Lambda}$.
+
+The new expression for $b_t$ becomes
+\begin{align}
+    &{\color{blue}{\mu_t=2\rho\Lambda b_t+\Lambda\Gamma b_t-\Lambda\dot{b}_t}}\\
+    &{\color{blue}{\rightarrow \dot{b}_t-\left(\Gamma+2\rho\right)b_t+\Lambda^{-1}\mu_t=0}}\\
+    &\text{treating $\mu_t$ as approximately constant}\\
+    &{\color{blue}{\rightarrow b_t=(\Gamma+2\rho)^{-1}\Lambda^{-1}\mu_t+C_1e^{(\Gamma+2\rho)t}}}\\
+    &\text{Requiring finite b at late times sets the integration constant to zero}\\
+    &{\color{blue}{\rightarrow b_t=(\Gamma+2\rho)^{-1}\Lambda^{-1}\mu_t}}
+\end{align}
+In the limit of $\rho\rightarrow0$ we recover our discount-free expression for $b_t$.
+
+Therefore in the presence of an exponential utility function, $a_t=e^{-\rho(t-t_0)}$, we have the generalized $\rho$-dependent $\{\Gamma,b_t\}$ given by
+\begin{align}
+&{\color{olive}{\Gamma = -\rho\pm \sqrt{\left(\kappa\Lambda^{-1}\Omega\right)},}}\\
+&{\color{blue}{b_t=(\Gamma+2\rho)^{-1}\Lambda^{-1}\mu_t.}}
+\end{align}
+\subsection{Power Law Discounting}
+An alternative functional form for discounting a power law dependence in time,
+\begin{equation}
+    \$_t= \left(\frac{t}{t_0}\right)^{-n}\cdot\$_{t_0}
+\end{equation}
+The  time dependent holdings now take the form
+\begin{align}
+x_t(\$_t)&=a_t\cdot x_{t}(\$_{t_0})=\left(\frac{t}{t_0}\right)^{-n}x_t(\$_{t_0}),\\
+\dot{x}_t(\$_t/\text{time})&=\frac{d}{dt}\left[\left(\frac{t}{t_0}\right)^{-n}x_t(\$_{t_0}/\text{time})\right]=a_t\cdot\dot{x}_t(\$_{t_0}/\text{time})-\frac{n}{t} a_t\cdot x_t(\$_{t_0}),\\
+\mu_t(\$_t/\text{time})&=a_t\cdot\mu_t(\$_{t_0}/\text{time})=\left(\frac{t}{t_0}\right)^{-n}\mu_t(\$_{t_0}/\text{time}).
+\end{align}
+
+Our expanded utility function becomes
+\begin{align}
+    {\mathcal{L}}=&{\color{purple}{a_t^2}}\mu_t\cdot x_t-\frac{1}{2}\left[{\color{purple}{a_t}}\dot{x}_t{\color{purple}{-\left(\frac{n}{t}\right)\cdot a_t\cdot x_t}}\right]^T\cdot\Lambda\cdot\left[{\color{purple}{a_t}}\dot{x}_t{\color{purple}{-\left(\frac{n}{t}\right)\cdot a_t\cdot x_t}}\right]-\frac{\kappa}{2}{\color{purple}{a_t^2}}x^T\cdot\Omega\cdot x,\nonumber\\
+    =&{\color{purple}{a_t^2}}\mu_t\cdot x_t-\frac{1}{2}{\color{purple}{a_t^2}}\dot{x}_t^T\cdot\Lambda\cdot\dot{x}_t\nonumber\\
+    &{\color{purple}{+\frac{1}{2}a_t^2\cdot\left(\frac{n}{t}\right)\cdot x_t^T\cdot\Lambda\cdot\dot{x}_t+\frac{1}{2}a_t^2\cdot\left(\frac{n}{t}\right)\cdot\dot{x}_t^T\cdot\Lambda\cdot x_t}}\nonumber\\
+    &-{\color{purple}{\frac{1}{2}a_t^2\left(\frac{n}{t}\right)^2x_t^T\cdot\Lambda\cdot x_t}}-\frac{\kappa}{2}{\color{purple}{a_t^2}}x_t^T\cdot\Omega\cdot x_t
+\end{align}
+In the case of a single asset this becomes
+\begin{align}
+    {\mathcal{L}}=&{\color{purple}{a_t^2}}\mu_t\cdot x_t-\frac{1}{2}{\color{purple}{a_t^2}}\Lambda\cdot\dot{x}_t^2{\color{purple}{+a_t^2\left(\frac{n}{t}\right)\cdot\Lambda\cdot x_t\cdot\dot{x}_t}}-\frac{1}{2}\left({\color{purple}{a_t^2\left(\frac{n}{t}\right)^2\cdot\Lambda}}+{\color{purple}{a_t^2}}\kappa\cdot\Omega\right)x_t^2
+\end{align}
+
+Our new optimization constraint equation is given by 
+\begin{align}
+    &\frac{\partial{\mathcal{L}}}{\partial x_t}=\frac{d}{dt}\frac{\partial{\mathcal{L}}}{\partial \dot{x}_t},\nonumber\\
+    &\rightarrow a_t^2\mu_t+a_t^2\left(\frac{n}{t}\right)\Lambda\dot{x}_t-a_t^2\left(\left(\frac{n}{t}\right)^2\Lambda+\kappa\Omega\right)x_t=\frac{d}{dt}\left(-a_t^2\Lambda\dot{x}_t+a_t^2\left(\frac{n}{t}\right)\Lambda x_t\right)\nonumber\\
+    &\rightarrow a_t^2\mu_t+a_t^2\left(\frac{n}{t}\right)\Lambda\dot{x}_t-a_t^2\left(\left(\frac{n}{t}\right)^2\Lambda+\kappa\Omega\right)x_t=\nonumber\\
+    &-2\dot{a}_ta_t\Lambda\dot{x}_t-a_t^2\Lambda\ddot{x}_t+2\dot{a}_ta_t\left(\frac{n}{t}\right)\Lambda x_t-a_t^2\left(\frac{n}{t^2}\right)\Lambda x_t+a_t^2\left(\frac{n}{t}\right)\Lambda\dot{x}_t,\nonumber\\
+    &\text{Note }\dot{a}_t = -\left(\frac{n}{t}\right)\cdot a_t,\nonumber\\
+    &\rightarrow {\color{red}{a_t^2}}\mu_t+{\color{orange}{a_t^2\left(\frac{n}{t}\right)\Lambda\dot{x}_t}}-{\color{red}{a_t^2}}\left(\left(\frac{n}{t}\right)^2\Lambda+\kappa\Omega\right)x_t=\nonumber\\
+    &2\left(\frac{n}{t}\right){\color{red}{a_t^2}}\Lambda\dot{x}_t-{\color{red}{a_t^2}}\Lambda\ddot{x}_t-2{\color{red}{a_t^2}}\left(\frac{n}{t}\right)^2\Lambda x_t-{\color{red}{a_t^2}}\left(\frac{n}{t^2}\right)\Lambda x_t+{\color{orange}{a_t^2\left(\frac{n}{t}\right)\Lambda\dot{x}_t}},\nonumber\\
+    &\rightarrow \mu_t-\left(\left(\frac{n}{t}\right)^2\Lambda+\kappa\Omega\right)x_t=2\left(\frac{n}{t}\right)\Lambda\dot{x}_t-\Lambda\ddot{x}_t-2\left(\frac{n}{t}\right)^2\Lambda x_t-\left(\frac{n}{t^2}\right)\Lambda x_t.
+\end{align}
+\section{A Careful Study of The Action Functional}%
+\label{sec:a_careful_study_of_action_functional}
+In the previous sections we described the main result of Theorem 1 and the conditions necessary for our first order ODE ansatz to provide a unique solution to the optimal turnover problem.
+In the following sections we further explore the mathematical foundations which justify the calculations performed in the previous sections.
+
+\subsection{Basic Units and Utility Discounting}%
+\label{sec:units}
+The dimensions of the quantities involved in the utility---which we also call the action functional---are given by time and utility (e.g. currency).
+
+\begin{notation}[Time Units]
+    $\newmath{\Time}$ will denote units of time.
+\end{notation}
+
+Utility, on the other hand, can have a time-dependent interpretation depending on the situation at hand and approximations under consideration.
+\begin{notation}[Utility Units]
+    $\newmath{\Dollar_{t}}$ will denote units of utility (e.g. currency, or ``dollars'') as measured at time $t$.
+\end{notation}
+
+In this note we will assume that utility is \emph{exponentially discounted}: there exists an input parameter $\rho \geq 0$---the \newword{discount rate}---such that for any pair of times $t$ and $t'$ we have:
+\begin{equation}
+    \Dollar_{t} = \exp[-\rho (t' - t)] \Dollar_{t'},
+    \label{eq:discount_rule}
+\end{equation}
+note that utility at times $t' > t$ is given by multiplying by an exponential decaying factor.
+From this rule, for \emph{any} reference time $t_{0}$, we can extract $\rho$ as:
+\begin{equation*}
+    \rho = - \D{t} \log[\Dollar_{t}/\Dollar_{t_{0}}].
+\end{equation*}
+
+\begin{terminology}
+    The utility units $\Dollar_{t}$, which ``run'' with time will be called \newword{contemporary time units} for utility.
+\end{terminology}
+
+\begin{terminology}
+     In the remainder of this note, we will choose a distinguished initial time $t$ and call it $t = 0$. 
+     The utility units $\Dollar_{0}$ will be called \newword{initial time utility units}.
+\end{terminology}
+
+\begin{remark}[No Discounting]
+    If one does wishes to ignore the extra complications of discounting, it is fine to set $\rho = 0$ everywhere without any theoretical issues.
+\end{remark}
+
+\begin{remark}%
+\label{rem:damped_harmonic_oscillator}
+    Beyond any potential practical interest, introducing the exponential discount rate has an interesting theoretical motivation: it naturally reproduces the action and equation of motion for the \emph{damped} harmonic oscillator, with $\rho$ playing the role of a damping coefficient.
+\end{remark}
+
+\begin{remark}
+  The following analysis can easily be adapted to more complicated relations than~\eqref{eq:discount_rule} (e.g.\ a time-varying discount rate).
+  However, for our purposes this introduces extra complexity without the appropriate practical or theoretical motivations.
+\end{remark}
+
+
+\subsection{The Parameters and Input Data}%
+\label{sec:input_data}
+\begin{terminology}
+     $\newmath{\hs{A}}$ is the \newword{$\Real$-Hilbert space of assets} equipped with $\mathbb{R}$-valued inner product $\langle - , - \rangle_{\hs{A}}$. 
+\end{terminology}
+
+
+\begin{remark}%
+    \label{rem:assets_intepretation}
+    In a financial interpretation, $\hs{A}$ is taken to be the finite-dimensional Hilbert space $\mathbb{R}^{N}$, equipped with its standard inner product: $N < \infty$ is the number of assets and the $i$th standard basis element of $\Real^{N}$ corresponds to a particular asset.\footnote{
+        In fact, every finite-dimensional Hilbert space is \emph{unitarily} equivalent to $\mathbb{R}^{N}$ for some $N$.
+    }.
+\end{remark}
+
+\begin{terminology}
+    With the interpretation of Remark~\ref{rem:assets_intepretation}, we will call the standard basis of $\Real^{N}$ \newword{the basis of assets} and denote it as $\newmath{\{e_{i}\}_{i = 1}^{N}}$; the index $i$ will be called an \newword{asset}.
+\end{terminology}
+
+\begin{remark}
+    For the infinite-dimensionalphile: the mathematical analysis in this paper does not require any restrictions on the dimension of $\hs{A}$.
+\end{remark}
+
+%\begin{remark}[Units and $\hs{A}$]
+%  In many instances we will be dealing with vectors in $\hs{A}$ that take on different units: for instance, let $x_{t}$ denote the holdings at time $t$, denoted as $x_{t}$, can be written in the basis of assets as:
+%  \begin{equation*}
+%      x_{t} = \sum_{i \in I} (x_{t})_{i} e_{i}
+%  \end{equation*}
+%  where each $(x_{t})_{i}$ has units of $\Dollar_{t}$.
+%\end{remark}
+
+The input parameters and data for our action functional are the following:
+
+
+\begin{itemize}
+    \item $\Lambda \colon \hs{A} \lto \hs{A}$ a positive-definite endomorphism of $\hs{A}$
+    \begin{itemize}
+        \item \emph{Interpretation}: using the basis of assets, the entry $\langle e_{i}, \Lambda e_{j} \rangle$ is a measure of the market impact on asset $i$ of purchasing holdings in asset $j$.
+
+        \item \emph{Units}: Each entry $\langle e_{i}, \Lambda e_{j} \rangle$ has units of $\Time \cdot \Dollar_{t}^{-1}$.
+    \end{itemize}
+
+    \item $\Omega \colon \hs{A} \lto \hs{A}$ positive-definite endomorphism of $\hs{A}$: 
+    \begin{itemize}
+        \item \emph{Intepretation}: $\langle e_{i}, \Omega e_{j}\rangle$ is (co)variance of returns between asset $i$ and asset $j$ as measured over some time period.
+
+        \item \emph{Units}: Each entry $\langle e_{i}, \Omega e_{j}\rangle$ is unitless (returns have no units).
+    \end{itemize}
+
+    \item $\kappa > 0$
+    \begin{itemize}
+        \item \emph{Interpretation}: $\kappa$ describes our aversion to risk from volatility: larger $\kappa$ corresponds to a higher risk aversion.
+
+        \item \emph{Units}: $\kappa$ has units of $(\Dollar_{t})^{-1} \Time^{-1}$: this is assuming the risk aversion is constant when expressed in the units of utility in contemporary time.
+    \end{itemize}
+
+    \item $\rho \geq 0$: 
+    \begin{itemize}
+        \item \emph{Intepretation}: $\rho$ is an exponential discount rate that translates future dollars into present day dollars: see \S\ref{sec:units}.
+        
+        \item \emph{Units}: $[\rho] = \Time^{-1}$.
+    \end{itemize}
+
+
+    \item $\msf{F}$ is a filtered measure space whose expectation value function on $\ms{F}_{\leq \infty}$ is denoted $\expect$.
+    \begin{itemize}
+            \item \emph{Interpretation}: $\ms{F}_{\leq t}$ consists of all relevant events at times $\leq t$;
+
+            \item \emph{Units}: being an abstract measure space, there are no units associated with its elements, $\sigma$-algebra, or expectation value.
+    \end{itemize}
+
+    \item $\mu \in \SP^{0, 2}_{\msf{F}}(\NNReal; \hs{A})$: in plain english this is an $\hs{A}$-valued stochastic process adapted to $\msf{F}$ such that 
+    \begin{equation*}
+        \expect \int_{0}^{\infty} \langle \mu_{t}, \mu_{t} \rangle_{\hs{A}} \, \dd t < \infty.
+    \end{equation*}
+    \begin{itemize}
+        \item \emph{Interpretation}: the component $(\mu_{t})_{i} \coloneqq \langle e_{i}, \mu_{t} \rangle$ is the change in logarithmic price of asset $i$ at time $t$: if $P_{i}$ is a (weakly, or almost everywhere, differentiable) stochastic process describing the price of asset $i$ in units of $\Dollar_{t}$, then roughly speaking:
+        \begin{equation}
+            (\mu_{t})_{i} = 
+            \lim_{h \rightarrow 0}
+            \frac{P_{i}(t + h) - P_{i}(t)}{h P_{i}(t)} 
+            = \D{t} \log[P_{i}(t)/\Dollar_{0}].
+        \end{equation}
+        the 1-form $\mu_{t} \, \dd t$ (or, more properly: measure) is the proper notion of ``return'' over an infinitesimal period of time.
+
+
+        \item \emph{Units}: $[\mu_{t}] = \Time^{-1}$.
+    \end{itemize}
+\end{itemize}
+
+\begin{remark}[Why Constant in Contemporary Time?]
+    Note that the parameters $\Lambda$ and $\kappa$ contain units of utility.
+    When we allow for discounting, it is important to consider at which \emph{time} utility is being measured.
+    In the conventions above, $\kappa$ and $\Lambda$ are chosen to be constants when measured in the ``running'' contemporary units of utility $\Dollar_{t}$, rather than utility at present-day ``time $0$'' utility: $\Dollar_{0}$.
+
+    We provide several explanations for this convention (of descending seriousness and priorities):
+    \begin{itemize}
+        \item To give this convention some logical merit: if we consider that the value of utility in the future is discounted, then losses due to volatility or market impact should also be discounted.
+        
+        \item To give the convention mathematical merit: this choice of convention naturally produces an action functional that describes a system of damped, coupled, driven harmonic oscillators. 
+        (See Remark~\ref{rem:damped_harmonic_oscillator}).
+
+        \item Finally, to give the convention sociological merit: this same convention appears in the discrete-time version of the  model discussed here that appears in~\cite{garleanu2013dynamic}.
+    \end{itemize}
+\end{remark}
+
+
+\begin{remark}
+  Note that the discount rate $\rho$ is chosen to be a constant function of time.
+  One can generalize the analysis of this note to non-constant $\rho$ and get a solvable version of the second and first order ODEs; however, we will not assume this extra complexity.
+\end{remark}
+
+
+
+\subsection{The Action in All Glory}%
+\label{sec:the_action_in_all_glory}
+We begin with the input parameters and data as discussed in detail in \S\ref{sec:input_data}: namely positive-definite endomorphisms of the asset Hilbert space: $\Lambda$ and $\Omega$, parameters $\kappa > 0$ and $\epsilon \geq 0$, and a square-integrable stochastic process $\mu$ adapted to some filtered measure space $\msf{F}$.
+
+\subsection{The Domain}%
+\label{sec:the_domain}
+Before defining the utility function of interest---which we will also call the \newword{action}, we first define its domain.
+
+The domain will be a convex subset of an vector space of stochastic processes.
+\begin{definition}
+    For any $\rho > 0$ define $\newmath{\hs{S}_{\rho}}$ to be the $\Real$-vector space consisting of $\ms{F}$-adapted stochastic processes valued in $\hs{A}$ such that:
+
+    \begin{itemize}
+        \item $x$ is weakly differentiable;
+        
+        \item $x$ and $\dot{x}$ are square-integrable:
+        \begin{align*}
+             \langle x, x \rangle_{\hs{S}_{\rho}} &< \infty\\
+             \langle \dot{x}, \dot{x} \rangle_{\hs{S}_{\rho}} &< \infty
+        \end{align*}
+        where $\langle - , - \rangle_{\hs{S}_{\rho}}$ is defined on $\hs{A}$-valued $\msf{F}$-adapted stochastic processes as:
+        \begin{align}
+             \newmath{\langle y, z \rangle_{\hs{S}_{\rho}}}
+             \coloneqq 
+             \expect 
+             \int_{0}^{\infty} 
+             e^{-\rho t}
+             \langle y_{t} , z_{t} \rangle_{\hs{A}} 
+             \, \dd t.
+             \label{eq:generalized_ip}
+        \end{align}
+    \end{itemize}
+\end{definition}
+
+\begin{remark}
+    The notion of $\hs{S}$ above is only a rough definition: one should, for instance quotient by a subspace of null-vectors to get a non-degenerate inner product (this is like a good stochasic version of a.e.\ equivalence). However, the version above will work fine for our purposes.
+    A sensitive consideration will be considered in \S\ref{sec:technical_notions}.
+    With an appropriate definition, $\hs{S}_{\rho}$ can be shown to be a complete inner product space: i.e.\ a Hilbert space.
+\end{remark}
+
+% \SP_{\msf{F}}^{1,2}(\NNReal; \mathcal{A})
+For any fixed $x_{0} \in \Real$, define 
+\begin{equation*}
+  \newmath{\mathcal{D}_{\rho}^{x_{0}}}
+  \coloneqq
+  \{ 
+      x \in \hs{S}_{\rho}
+      :
+      x(0) = x_{0} 
+  \}
+\end{equation*}
+Here $x(0) = x_{0}$ indicates that the ``trace'' or boundary value of $x$ at time $0$ is given by the constant random variable taking on the fixed value $x_{0} \in \Real$.
+The notion of traces on Sobolev spaces is standard; see~\cite[Ch.~5]{pedregal_2024} for a detailed treatment.
+
+
+\subsection{The Action}%
+\label{sec:the_action}
+The \newword{random action} $S$ is a functional:
+\begin{equation*}
+    \begin{aligned}
+        \newmath{S} \colon 
+        \mathcal{D}_{\rho}^{x_{0}} 
+        &\lto 
+        L^{1}[\ms{F}_{\leq \infty}, \mathcal{A}]\\
+        x 
+        &\mapsto 
+        \integ{0}{\infty}{t}{%
+            \Lag[x_{t}, \dot{x}_{t}, t]
+        }
+    \end{aligned}
+    \label{eq:random_action}
+\end{equation*}
+where the \newword{Lagrangian} $\Lag$ is given by:
+\begin{equation}
+    \Lag[x_{t}, \dot{x}_{t}, t] 
+    \coloneqq
+	e^{-\rho t}
+	\left(
+		\langle \mu_t, x_t \rangle_{\hs{A}}
+		-
+		\frac{1}{2} \langle \dot{x}_{t}, \Lambda \dot{x}_{t} \rangle_{\hs{A}}
+		-
+		\frac{\kappa}{2} \langle x_{t}, \Omega x_{t} \rangle_{\hs{A}}
+	\right).
+    \label{eq:lagrangian}
+\end{equation}
+
+We can combine the random action $S$ with the expectation value: 
+\begin{equation*}
+    \expect \colon 
+        L^{1}[\ms{F}_{\leq \infty}, \mathcal{A}] 
+        \lto 
+        \Real
+\end{equation*}
+to obtain the \newword{action}:
+\begin{equation}
+    \newmath{\ES}
+    \coloneqq
+    \mathbb{E} \circ S \colon \mathcal{D}_{\rho}^{x_{0}} \rightarrow \Real.
+\end{equation}
+
+\begin{remark}[Units]
+    With units defined as in \S\ref{sec:input_data}, the expression~\eqref{eq:lagrangian} has units of $\Dollar_{0} \Time^{-1}$: time $0$ utility per unit of time.
+    The stochastic action $S$, and the action $\ES$ have units of $\Dollar_{0}$: time $0$ utility.
+\end{remark}
+
+% takes in a $\hs{A}$-valued stochastic processes (with suitable weak derivatives) and outputs a random variable on $\ms{F}_{\leq \infty}$: using the notation of \S\ref{sec:basic_spaces}--\S\ref{sec:sobelov}, $S$ is a functional:
+% \begin{equation*}
+% 	S \colon \Sobolev^{1,2}_{\msf{F}}[\hs{A}] \lto \RV^{1}[\ms{F}_{\leq \infty}, \hs{A}]
+% \end{equation*}
+\begin{remark}
+    The Lagrangian $\mathcal{L}$ is technically a function of three independent $\hs{A}$-valued quantities; thought of this way, it defines a function with all second order partial derivatives (in fact, it has \emph{all} partial derivatives).
+    This is a necessary condition to apply most Euler-Lagrange techniques.
+\end{remark}
+
+\begin{remark}
+    Using the square-integrability constraints on fixed $x$ and $\mu$, we have that the function $t \rightarrow \Lag[x_{t}, \dot{x}_{t}, t]$ defines an element of $\RV^{1}[\NNReal, \RV^{1}[\ms{F}_{\leq t}; \hs{A}]]$ (the space of $\RV^{1}[\ms{F}_{\leq t}; \hs{A}]$-valued random variables) in particular, we can take its Lebesgue/Bocher/Pettis integral with respect to time to get a random variable in $\RV^{1}[\ms{F}_{\leq \infty}, \msf{A}]$: $\hs{A}$-valued random variables on $\ms{F}_{\leq \infty}$.
+\end{remark}
+% The ``Lagrangian" $\mathcal{L}$ takes in an $\hs{A}$-valued random variable $x_{t}$ on $\ms{F}_{\leq t}$, and a ``tangent'' direction random variable on on $\ms{F}_{\leq t}$---which we notationally denote as $\dot{x}_{t}$, knowing that eventually it will be the derivative of $x$ when substituted into the action---and spits out a $\hs{A}$-valued random variable.
+
+\begin{remark}
+    The ``Lagrangian''~\eqref{eq:lagrangian} should really be thought of as related to the \textit{negative} of an associated Hamiltonian (or the negative of a Euclidean signature Lagrangian).
+    A deterministic version of the function~\eqref{eq:lagrangian} is the negative of the Euclidean signature Lagrangian for a (damped) harmonic oscillator.
+\end{remark}
+
+
+\section{Optimal Solutions: The Second Order ODE}%
+\label{sec:optimal_solutions}
+Our goal will be to develop a first-order ODE (in stochastic processes) that tells us the optimal way to modify our current holdings $x$: i.e.\ we wish to determine a first order ODE that maximizes the action $\ES$ defined in \S\ref{sec:the_action} over the domain $\mathcal{D}_{\rho}^{x_{0}}$ defined in \S\ref{sec:the_domain}.
+
+One way of determining this first order ODE is by passing through the derivation of a second order ODE that optimal solutions must satisfy.
+
+\subsection{The Second Order ODE from Convex Optimization}
+See~\cite{baldacci_2022} for a derivation of second and first order ODEs from convex optimization in the case that $\rho = 0$.
+It is possible that the situation with $\rho > 0$ can be treated by working with our general inner product $\langle - , - \rangle_{\hs{S}_{\rho}}$ defined by~\eqref{eq:generalized_ip}.
+We have nothing substantial to add to the $\rho = 0$ derivation of the second order ODE.
+
+\subsection{The Second Order ODE From the Euler-Lagrange Equations}
+In \S\ref{sec:euler_lagrange}, we sketch a generalization of the calculus of variations approach for trying to determine extremal points for action functionals of the form~\eqref{eq:random_action}.
+In the deterministic world these techniques are well-known, rigorous and well-established.
+In the stochastic world, these techniques are certainly known, but not routinely utilized (at least to our knowledge)---at least in the language we present here which closely mirrors the classical language of calculus and differential geometry.\footnote%
+{
+    The Malliavin calculus is a well-known calculus of variations for stochastic processes, however, it is shrouded in a different language.
+}
+
+First note that $\ES$ is a strictly concave function; so if it has maxima, they are unique.
+
+Using the fact that $\Lambda$ and $\Omega$ are positive-definite (so, in particular, $\Lambda^{T} = \Lambda$ and $\Omega^{T} = \Omega$), we have:\footnote%
+{
+  All derivatives mentioned in this section are \emph{weak derivatives}, and all equalities take place in suitable spaces of random variables up to a.e.\ equivalence: if we work with explicit functions, rather than equivalence classes, all equalities can be taken using a.e.\ equivalence.
+}
+\begin{equation*}
+    \frac{\partial \Lag}{\partial x}
+    = 
+	e^{-\rho t} 
+	\left(
+		\mu_{t} - \kappa \Omega x_{t}
+	\right)
+\end{equation*}
+and
+\begin{equation*}
+    \frac{\partial \Lag}{\partial \dot{x}}
+    = 
+	-e^{-\rho t} \Lambda \dot{x}
+\end{equation*}
+Consequently, the Euler-Lagrange equations become:
+\begin{align*}
+  0 &= 
+    \frac{\partial \Lag}{\partial x_{t}}
+    -
+   \D{t} \frac{\partial \Lag}{\partial \dot{x}_{t}}\\
+    &=
+	e^{-\rho t}
+	\left(
+		\mu_{t}
+		-
+		\kappa \Omega x_{t}
+		+
+		\Lambda \ddot{x}_{t}
+		+
+		\rho \Lambda \dot{x}_{t}
+	\right)
+\end{align*}
+which gives us the ordinary differential equation (in stochastic processes):
+\begin{equation}
+	\Lambda \ddot{x}_{t} = \kappa \Omega x_{t} - \mu_{t} - \rho \dot{x}_{t},
+  \label{eq:ode_2nd_ord}
+\end{equation}
+which is identifiable\footnote%
+{
+   To formally identify the two expressions, we can apply the conditional expectation operator $\expect_{t_{0}}$ to both sides of the equation to get a differential equation in the conditional expectations $(\expect_{t_{0}} x)_{t}, (\expect_{t_{0}} \dot{x})_{t}$ and $(\expect_{t_{0}} \mu)_{t}$.
+}
+with~\cite[Eqn.~(9)]{baldacci_2022}.
+
+\begin{remark}[Driven, Damped, Coupled Harmonic Oscillators]
+    In the deterministic world,~\eqref{eq:ode_2nd_ord} provides the equations of motion for system of driven, damped, coupled harmonic oscillators an with external time-dependent driving force $-\mu_{t}$, and a damping coefficient $\rho$---more precisely, it provides equations of motion in ``imaginary-time'' or ``temperature space''.
+    The positions of each individual harmonic oscillator are given by looking at the components of $x_{t}$ in the eigenbasis of $\Lambda$: note that this is generically, not going to be the asset basis unless $\Lambda$ is diagonal (i.e.\ when the market impact of purchasing a single asset only influences itself).
+    	
+     It is worth noting that the ``spring constant'' $\kappa \Omega$ is positive-definite and is not modified by a minus sign in~\eqref{eq:ode_2nd_ord}: this means that, without the driving force $-\mu_{t}$ the solutions include exponential damping, or exponential blow-up terms: the latter may not be present assuming certain normalizability constraints and/or boundary conditions on solutions.
+\end{remark}
+
+\section{Solutions to the Second Order ODE}%
+\label{sec:solutions_to_2nd_order_ODE}
+In this section we discuss some solutions to the second order stochastic ODE~\eqref{eq:ode_2nd_ord}.
+We use the same ideas from an undergraduate differential equations course to write down explicit solutions:
+there is no obstruction to verifying that these are, indeed, solutions in our generalized context: existence is guaranteed.
+However, we do not rigorously check if these are \emph{all possible} solutions, however, but this does not mean there is a serious obstruction to this problem: most likely it corresponds to a simple lifting of proofs from an ODE course.
+
+\subsection{Solutions to the Homogeneous Part}
+The homogeneous part of~\eqref{eq:ode_2nd_ord} is:
+\begin{equation}
+    \Lambda \ddot{x}_{t} = \kappa \Omega x_{t} - \rho \dot{x}_{t};
+    \label{eq:ode_2nd_ord_homogenous}
+\end{equation}
+To find the two linearly-independent solutions to this equation, we can substitute in the ansatz $x = \exp(\Gamma t)$ and arrive at the quadratic operator equation:
+\begin{equation}
+    0 = \Lambda \Gamma^2 - \kappa \Omega + \rho \Gamma.
+    \label{eq:Gamma_operator_equation}
+\end{equation}
+If we can find two solutions $\Gamma_{+},\, \Gamma_{-} \colon \hs{A} \lto \hs{A}$ such that the associated Wronskian is invertible (which holds when $\Gamma_{+} \neq \Gamma_{-}$), then the two-parameter family of solutions to~\eqref{eq:ode_2nd_ord_homogenous} is given by 
+\begin{equation}
+     x_{t} = \exp(\Gamma_{+} t) c_{1} + \exp(\Gamma_{-} t) c_{2}
+     \label{eq:ode_general_solution}
+\end{equation}
+where $c_{1},\, c_{2} \in \hs{A}$ are constant vectors. 
+
+
+\subsubsection{\texorpdfstring{$\Gamma$}{Gamma} at No Discount Rate}
+When $\rho = 0$, equation~\eqref{eq:Gamma_operator_equation} reduces to the equation: $\Gamma^2 = \kappa \Lambda^{-1} \Omega$ so that we can take $\Gamma_{+}$ to be a choice of any square root of $\kappa \Lambda^{-1} \Omega$ and then choose $\Gamma_{-} = - \Gamma_{+}$.
+Note that $\Lambda^{-1} \Omega$ is not necessarily positive-definite, or even self-adjoint, so there may be questions about which, if \textit{any}, square root we mean and the possibility for oscillatory terms in~\eqref{eq:ode_general_solution} coming from negative eigenvalues of $\Lambda^{-1} \Omega$.
+
+Luckily, the situation is well-behaved: first notice that $\Lambda^{-1} \Omega$ is conjugate to a positive definite operator on $\hs{A}$:
+\begin{equation*}
+    \Lambda^{1/2} \left(\Lambda^{-1} \Omega \right) \Lambda^{-1/2} 
+    = 
+    \Lambda^{-1/2} \Omega \Lambda^{-1/2};
+\end{equation*}
+hence, $\kappa \Lambda^{-1} \Omega$ is diagonalizable, and has positive spectrum: this means that we can find a unique square root with positive spectrum through spectral decomposition and conjugation by the invertible operator $\Lambda^{1/2}$, choosing positive square roots for all eigenvalues.\footnote%
+{
+    For $\hs{A}$ infinite-dimensional and $\Lambda$ or $\Omega$ non-compact, we can replace ``eigenvalue'' with ``element of the spectrum''.
+}
+Explicitly, the square root produced through this procedure is given by:
+\begin{equation}
+    \Gamma_{+} \coloneqq 
+    \sqrt{\kappa} \Lambda^{-1/2}
+    \left\{
+        \Lambda^{-1/2} \Omega \Lambda^{-1/2}
+    \right\}^{1/2}
+    \Lambda^{1/2}.
+    \label{eq:positive_root}
+\end{equation}
+
+\begin{remark}
+    Any other choice of square root is given by combinations of various choices of sign for the square root of each eigenvalue in the spectral decomposition of $\Lambda^{-1} \Omega$. 
+    These other choices would also work in the general solution~\eqref{eq:ode_general_solution}, but decaying and growing components would be mixed between its two summands~\eqref{eq:ode_general_solution} in an eigenvalue expansion of $c_{1}$ and $c_{2}$.
+    The choice~\eqref{eq:positive_root} is the one that cleanly separates the left summand and right summand of~\eqref{eq:ode_general_solution} into decaying and exploding components respectively.
+\end{remark}
+
+\subsubsection{\texorpdfstring{$\Gamma$}{Gamma} with a Discount Rate and a Change of Coordinates}%
+\label{sec:gamma_with_discount}
+Instead of solving~\eqref{eq:Gamma_operator_equation} directly, we rephrase the problem at hand through an insightful change of coordinates that helps us avoid some of the non-positive definiteness issues discussed in the previous section.
+
+Begin by defining the rescaled stochastic process:
+\begin{equation*}
+    \twid{x}_{t} \coloneqq \Lambda^{1/2} x_{t}
+    \label{eq:coordinate_change}
+\end{equation*}
+then by multiplying the ODE~\eqref{eq:ode_2nd_ord} on the left by $\Lambda^{-1/2}$, we obtain the ODE:
+\begin{equation*}
+    \ddot{\twid{x}}_{t} = \kappa \twid{\Omega} \twid{x}_{t} - \twid{\mu}_{t} - \rho \Lambda \dot{\twid{x}}
+\end{equation*}
+where
+\begin{align*}
+    \twid{\mu} &\coloneqq \Lambda^{-1/2} \mu,\\
+    \twid{\Omega} &\coloneqq \Lambda^{-1/2} \Omega \Lambda^{-1/2}.
+\end{align*}
+
+The corresponding homogenous ODE
+\begin{equation*}
+    \ddot{\twid{x}}_{t} = \kappa \twid{\Omega} \twid{x}_{t} - \rho \Lambda \dot{\twid{x}}
+\end{equation*}
+has general solution
+\begin{equation*}
+     \twid{x}_{t} = \exp(\twid{\Gamma}_{+} t) c_{1} + \exp(\twid{\Gamma}_{-} t) c_{2}
+\end{equation*}
+where $\twid{\Gamma}_{\pm} \colon \hs{A} \lto \hs{A}$ are the solutions to the quadratic operator equation:
+\begin{equation}
+    0 = \twid{\Gamma}^2 + \rho \Lambda \twid{\Gamma} - \kappa \twid{\Omega} .
+    \label{eq:Gamma_operator_equation_twiddle}
+\end{equation}
+Equation~\eqref{eq:Gamma_operator_equation_twiddle} has solutions (noting that when $\Lambda$ does not commute with $\twid{\Omega}$, more care is needed with operator ordering)
+\begin{equation}
+    \twid{\Gamma}_{\pm} = \frac{1}{2} 
+    \left[
+        -\rho \Lambda \pm \sqrt{\rho^2 \Lambda^2 + 4 \kappa \twid{\Omega}} 
+    \right]
+    \label{eq:Gamma_twid_solutions}
+\end{equation}
+The quantity under the square root in~\eqref{eq:Gamma_twid_solutions} is a sum of positive definite operators; hence, it is positive definite;
+so we define the square root as the unique positive-definite square root. 
+
+\subsection{Solutions to the Full ODE}
+\textbf{WIP:} The particular solution to the full ODE~\eqref{eq:ode_2nd_ord} can be constructed using variation of parameters.
+Recall that the full ODE takes the form:
+\begin{equation}
+    \Lambda \ddot{x}_{t} + \rho \Lambda \dot{x}_{t} - \kappa \Omega x_{t} = -\mu_{t}.
+    \label{eq:full_ode_restated}
+\end{equation}
+
+\subsubsection{Variation of Parameters Method}
+The homogeneous equation $\Lambda \ddot{x} + \rho \Lambda \dot{x} - \kappa \Omega x = 0$ has fundamental solutions:
+\begin{equation*}
+    x_{t}^{(1)} = e^{\Gamma_{+} t}, \qquad x_{t}^{(2)} = e^{\Gamma_{-} t},
+\end{equation*}
+where $\Gamma_{\pm}$ are given by~\eqref{eq:Gamma_twid_solutions} (after undoing the coordinate change).
+
+The general solution to the homogeneous equation is:
+\begin{equation*}
+    x_{t}^{\text{hom}} = c_{1} e^{\Gamma_{+} t} + c_{2} e^{\Gamma_{-} t}.
+\end{equation*}
+
+For the particular solution, we use variation of parameters by seeking a solution of the form:
+\begin{equation*}
+    x_{t}^{\text{part}} = u_{1}(t) e^{\Gamma_{+} t} + u_{2}(t) e^{\Gamma_{-} t},
+\end{equation*}
+where $u_{1}(t)$ and $u_{2}(t)$ are functions to be determined.
+
+Following the standard variation of parameters procedure, we impose:
+\begin{align*}
+    \dot{u}_{1} e^{\Gamma_{+} t} + \dot{u}_{2} e^{\Gamma_{-} t} &= 0,\\
+    \dot{u}_{1} \Gamma_{+} e^{\Gamma_{+} t} + \dot{u}_{2} \Gamma_{-} e^{\Gamma_{-} t} &= -\Lambda^{-1} \mu_{t}.
+\end{align*}
+This system can be written in matrix form as:
+\begin{equation*}
+    \begin{pmatrix}
+        e^{\Gamma_{+} t} & e^{\Gamma_{-} t} \\
+        \Gamma_{+} e^{\Gamma_{+} t} & \Gamma_{-} e^{\Gamma_{-} t}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \dot{u}_{1} \\ \dot{u}_{2}
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        0 \\ -\Lambda^{-1} \mu_{t}
+    \end{pmatrix}.
+\end{equation*}
+
+The Wronskian matrix $W(t)$ has determinant:
+\begin{equation*}
+    \det W(t) = (\Gamma_{-} - \Gamma_{+}) e^{(\Gamma_{+} + \Gamma_{-}) t}.
+\end{equation*}
+Using the quadratic formula solutions, we have $\Gamma_{+} + \Gamma_{-} = -\rho$ (the sum of roots) and $\Gamma_{-} - \Gamma_{+} = -\sqrt{\rho^{2} + 4\kappa \Lambda^{-1} \Omega}$ (the difference, with $\Gamma_{+} > \Gamma_{-}$).
+
+Solving via Cramer's rule:
+\begin{align*}
+    \dot{u}_{1} &= \frac{e^{\Gamma_{-} t} \Lambda^{-1} \mu_{t}}{(\Gamma_{+} - \Gamma_{-}) e^{(\Gamma_{+} + \Gamma_{-}) t}} 
+    = \frac{e^{-\Gamma_{+} t} \Lambda^{-1} \mu_{t}}{\Gamma_{+} - \Gamma_{-}},\\
+    \dot{u}_{2} &= \frac{-e^{\Gamma_{+} t} \Lambda^{-1} \mu_{t}}{(\Gamma_{+} - \Gamma_{-}) e^{(\Gamma_{+} + \Gamma_{-}) t}} 
+    = \frac{-e^{-\Gamma_{-} t} \Lambda^{-1} \mu_{t}}{\Gamma_{+} - \Gamma_{-}}.
+\end{align*}
+
+Integrating (with appropriate limits chosen to satisfy boundary conditions):
+\begin{align*}
+    u_{1}(t) &= \frac{1}{\Gamma_{+} - \Gamma_{-}} \int_{t}^{\infty} e^{-\Gamma_{+} s} \Lambda^{-1} \mu_{s} \, \dd s,\\
+    u_{2}(t) &= \frac{-1}{\Gamma_{+} - \Gamma_{-}} \int_{0}^{t} e^{-\Gamma_{-} s} \Lambda^{-1} \mu_{s} \, \dd s.
+\end{align*}
+The choice of integration limits ensures that the solution decays as $t \to \infty$ (using the upper limit $\infty$ for $u_{1}$ since $\Gamma_{+} > 0$) and satisfies the initial condition at $t = 0$ (using lower limit $0$ for $u_{2}$).
+
+\subsubsection{The Green's Function}
+The particular solution can be written in terms of a Green's function:
+\begin{equation*}
+    x_{t}^{\text{part}} = \int_{0}^{\infty} G(t, s) \Lambda^{-1} \mu_{s} \, \dd s
+\end{equation*}
+where the Green's function $G(t, s)$ is given by:
+\begin{equation}
+    G(t, s) = \frac{1}{\Gamma_{+} - \Gamma_{-}}
+    \begin{cases}
+        e^{\Gamma_{+}(t - s)} - e^{\Gamma_{-}(t - s)} & \text{if } s < t,\\[6pt]
+        e^{\Gamma_{+}(t - s)} & \text{if } s \geq t.
+    \end{cases}
+    \label{eq:greens_function}
+\end{equation}
+
+\subsubsection{Special Case: Zero Discount Rate}
+For the case $\rho = 0$, we have $\Gamma_{+} = -\Gamma_{-} = \Gamma = \sqrt{\kappa \Lambda^{-1} \Omega}$, so:
+\begin{equation*}
+    \Gamma_{+} - \Gamma_{-} = 2\Gamma.
+\end{equation*}
+The Green's function simplifies to:
+\begin{equation*}
+    G(t, s) = \frac{1}{2\Gamma}
+    \begin{cases}
+        e^{\Gamma(t - s)} - e^{-\Gamma(t - s)} = \frac{\sinh(\Gamma(t-s))}{\Gamma} & \text{if } s < t,\\[6pt]
+        e^{\Gamma(t - s)} & \text{if } s \geq t.
+    \end{cases}
+\end{equation*}
+
+The full solution with initial condition $x(0) = x_{0}$ is:
+\begin{equation*}
+    x_{t} = e^{-\Gamma t} x_{0} + \int_{0}^{t} \frac{\sinh(\Gamma(t-s))}{\Gamma} \Lambda^{-1} \mu_{s} \, \dd s + \int_{t}^{\infty} \frac{e^{\Gamma(t-s)}}{2\Gamma} \Lambda^{-1} \mu_{s} \, \dd s.
+\end{equation*}
+After simplification (using properties of hyperbolic functions and rearranging), one can verify that this takes the form given in~\cite[Eqn.~(9)]{baldacci_2022}:
+\begin{equation*}
+    x_{t} = e^{-\Gamma t} x_{0} + \int_{0}^{t} e^{-\Gamma(t-s)} b_{s} \, \dd s,
+\end{equation*}
+where $b_{s} = \int_{s}^{\infty} e^{-\Gamma(z-s)} \Lambda^{-1} \mu_{z} \, \dd z$ as derived in~\eqref{eq:bt_solution}.
+
+\section{Technical Issues}%
+\label{sec:technical_issues}
+In this section we discuss some possible technical issues, and why they are actually non-issues.
+
+\section{Value of the Action on Optimal Solutions}
+In this section we compute the value of the action on the optimal solution.
+In order to do this, we will need an explicit form for the optimal solution.
+
+\subsection{No Discount Rate}
+The solution to the second order ODE~\eqref{eq:ode_2nd_ord} at discount rate $\rho = 0$ and initial condition $x(0) = x_{0}$ is given as:\footnote%
+{%
+    See~\cite[Eqn.~(9)]{baldacci_2022}; the time $t^{0}$ is arbitrary and we set it equal to the initial time so that all conditional expectations can be ignored.
+}
+\begin{equation*}
+    x_{t} 
+    = 
+    e^{-\Gamma t} x_{0}
+    + 
+    \integ{0}{t}{s}{%
+        e^{-\Gamma (t - s)} 
+        \left[%
+            \integ{s}{\infty}{z}{%
+                e^{-\Gamma (z - s)} \Lambda^{-1} \mu_{z}
+        }
+        \right]
+    }.
+\end{equation*}
+We can we rewrite this as:
+\begin{align*}
+    x_{t} 
+    &= 
+    e^{-\Gamma t} x_{0}
+    + 
+    e^{-\Gamma t}
+    \integ{0}{t}{s}{%
+        e^{\Gamma s} 
+        \left[%
+            \integ{s}{\infty}{z}{%
+                e^{-\Gamma (z - s)} \left(\Lambda^{-1} \mu_{z} \right)
+        }
+        \right]
+    }\\
+    &=
+    e^{-\Gamma t} 
+    \left(
+        x_{0}
+        + 
+        \integ{0}{t}{s}{%
+            e^{2\Gamma s} 
+            \highlight{%
+            \left[%
+                \integ{s}{\infty}{z}{%
+                    e^{-\Gamma z} \left(\Lambda^{-1} \mu_{z} \right)
+            }
+            \right]
+            }
+        }
+    \right)
+\end{align*}
+The highlighted term in the square brackets defines an $\hs{A}$-valued stochastic process that we denote as:
+\begin{equation*}
+    \beta_{s} 
+    \coloneqq  
+    \integ{s}{\infty}{z}{%
+        e^{-\Gamma z} \left(\Lambda^{-1} \mu_{z} \right).
+    }
+\end{equation*}
+So, we can write
+\begin{equation*}
+    x_{t} = e^{-\Gamma t} 
+    \left(
+        x_{0} 
+        + 
+        \integ{0}{t}{s}{%
+            e^{2 \Gamma s} \beta_{s}
+        }
+    \right).
+\end{equation*}
+So we have
+\begin{align*}
+    \langle x, \mu \rangle_{\hs{S}}
+    &=
+    \expect \integ{0}{\infty}{t}{%
+    \left\langle 
+    e^{-\Gamma t}
+    \left(
+        x_{0} 
+        + 
+        \integ{0}{t}{s}{%
+            e^{2 \Gamma s} \beta_{s}
+        }
+    \right)
+    ,
+    \mu_{t}
+    \right \rangle_{\hs{A}}
+    }\\
+    &=
+    \expect \integ{0}{\infty}{t}{%
+    \left\langle 
+        x_{0} 
+        + 
+        \integ{0}{t}{s}{%
+            e^{2 \Gamma s} \beta_{s}
+        }
+    ,
+    (e^{-\Gamma t})^{T}
+    \mu_{t}
+    \right \rangle_{\hs{A}}
+    }\\
+    &=
+    \expect \integ{0}{\infty}{t}{%
+    \langle 
+        x_{0}, \left(e^{-\Gamma t}\right)^{T} \mu_{t}
+    \rangle_{\hs{A}}
+    }
+    \\
+    &\phantom{=}
+    +
+    \underbrace{%
+        \highlight{%
+            \expect \integ{0}{\infty}{t}{%
+            \left\langle
+                \integ{0}{t}{s}{%
+                    e^{2 \Gamma s} \beta_{s}
+                }
+            ,
+            \left(e^{-\Gamma t}\right)^{T}
+            \mu_{t}
+            \right\rangle_{\hs{A}}
+            }
+        }
+    }_{D}
+\end{align*}
+The second, summand, labelled $D$, can be rewritten: let $K$ denote the operator
+\begin{equation*}
+    \begin{aligned}
+        K \colon \hs{S} &\lto \hs{S}\\
+        u &\lto \left(t \mapsto \integ{0}{t}{s}{u_{s}} \right)
+    \end{aligned}
+\end{equation*}
+then a string of computations verifies that $K$ has an adjoint given by
+\begin{equation*}
+    \begin{aligned}
+        K^{T} \colon \hs{S} &\lto \hs{S}\\
+        u &\lto \left(t \lmapsto \integ{t}{\infty}{s}{(\expect_{t}[u])_{s}} \right)
+    \end{aligned}
+\end{equation*}
+where $\expect_{t}$ is shorthand for the conditional expectation value $\expect(- | \ms{F}_{\leq t})$.
+Define the $\hs{A}$-valued stochastic processes $\twid{\beta} \in \hs{S}$ pointwise as:
+\begin{equation*}
+    \twid{\beta}_{s} \coloneqq e^{2 \Gamma s} \beta_{s},
+\end{equation*}
+and let $\varepsilon$ denote the operator
+\begin{equation*}
+    \begin{aligned}
+        \varepsilon \colon \mathcal{S} &\lto \mathcal{S}\\
+        u &\lmapsto \left(t \mapsto e^{-\Gamma t} u_{t} \right),
+    \end{aligned}
+\end{equation*}
+which has adjoint (using the inner product $\langle - , - \rangle_{\hs{S}}$ given by:
+\begin{equation*}
+    \begin{aligned}
+        \varepsilon^{T} \colon \mathcal{S} &\lto \mathcal{S}\\
+        u &\lmapsto \left(t \mapsto (e^{-\Gamma t})^{T} u_{t} \right).
+    \end{aligned}
+\end{equation*}
+With this notation developed, we have:
+\begin{align*}
+    \highlight{D}
+    &=
+    \langle K \twid{\beta}, \varepsilon^{T} \mu \rangle_{\hs{S}}\\
+    &=
+    \langle \twid{\beta}, K^{T}[\varepsilon^{T} \mu] \rangle_{\hs{S}}.
+\end{align*}
+Luckily, one has the pointwise relation
+\begin{align*}
+    K^{T}[\varepsilon^{T} \mu]_{t}
+    &=
+    \integ{t}{\infty}{s}{(\expect_{t}[\varepsilon u])_{s}}\\
+    &=
+    \integ{t}{\infty}{s}{(\varepsilon \expect_{t}[u])_{s}}\\
+    &=
+    \integ{t}{\infty}{s}{([e^{-\Gamma s}]^{T} \expect_{t}[u])_{s}}
+\end{align*}
+Consequently:
+\begin{align*}
+    D 
+    &= \expect \integ{0}{\infty}{t}{%
+    \left\langle
+        \twid{\beta}_{t}, 
+        \integ{t}{\infty}{s}{%
+            \left([e^{-\Gamma s}]^{T} \expect_{t}[u] \right)_{s}
+        }
+    \right\rangle_{\hs{A}}
+    }\\
+    &= \expect \integ{0}{\infty}{t}{%
+    \left\langle
+        e^{-\Gamma t} \twid{\beta}_{t}, \expect_{t}[\mu]
+    \right\rangle_{\hs{A}}
+    }\\
+    &= \expect \integ{0}{\infty}{t}{%
+    \left\langle
+        e^{\Gamma t} \beta_{t}, 
+        \integ{t}{\infty}{s}{(\expect_{t}[\mu])_{s}}
+    \right\rangle_{\hs{A}}
+    }
+\end{align*}
+
+
+% It will be helpful to rewrite this in a form that simplifies some of the matrix multiplication.
+% First, recall the definition of $\Gamma$ in~\eqref{eq:positive_root}:
+% \begin{equation*}
+%     \Gamma \coloneqq 
+%     \sqrt{\kappa} \Lambda^{-1/2}
+%     \left\{
+%         \Lambda^{-1/2} \Omega \Lambda^{1/2}
+%     \right\}^{1/2}
+%     \Lambda^{1/2}.
+% \end{equation*}
+% So, defining $\twid{\Gamma} \coloneqq \sqrt{\kappa} \left\{ \Lambda^{-1/2} \Omega \Lambda^{1/2} \right\}^{1/2}$:
+% \begin{equation}
+%     e^{-\Gamma t} = \Lambda^{-1/2} e^{\twid{\Gamma} t} \Lambda^{1/2}
+% \end{equation}
+% and
+% \begin{align*}
+%     e^{-\Gamma t} \Lambda^{-1} \mu 
+%     &= 
+%     \Lambda^{-1/2} e^{\twid{\Gamma} t} \Lambda^{-1/2} \mu\\
+%     &=
+%     \Lambda^{-1/2} e^{-\twid{\Gamma} t} \twid{\mu}
+% \end{align*}
+% where $\twid{\mu} \coloneqq \Lambda^{-1/2} \mu$.
+
+
+
+% Now define $\widehat{\mu}_{t} \coloneqq \Lambda^{-1} \mu_{t}$, similar to the discussion in \S\ref{sec:square_integrability_failure}, we can rewrite the blue term in the square brackets as %not quite!
+% \begin{equation*}
+%     \integ{s}{\infty}{z}{%
+%         e^{-\Gamma z} \left(\Lambda^{-1} \mu_{z} \right)
+%         }
+%     =
+%     \langle \varepsilon^{[>s]}, \widehat{\mu}^{[>s]} \rangle_{\hs{S}}
+% \end{equation*}
+% where the deterministic stochastic process $\varepsilon^{[>t]}$ is defined as:
+% \begin{equation*}
+%     \begin{aligned}
+%         \varepsilon^{[>s]} \colon \NNReal &\to \Real\\
+%         z &\mapsto 
+%         \begin{cases} 
+%             e^{-\Gamma z} & z > s \\
+%             0 & z \leq s
+%        \end{cases}
+%     \end{aligned}
+% \end{equation*}
+% and the stochastic process $\widehat{\mu}^{[>t]}$ is defined as:
+% \begin{equation*}
+%     \begin{aligned}
+%         \widehat{\mu}^{[>s]} \colon \NNReal &\to \Real\\
+%         z &\mapsto 
+%         \begin{cases} 
+%             \widehat{\mu}_{z} & z > s \\
+%             0 & z \leq s
+%        \end{cases}.
+%     \end{aligned}
+% \end{equation*}
+% Define $x^{t_{0}}_{t} \coloneqq \expect_{t_{0}} x$, then~\cite[Eqn.~(9)]{baldacci_2022} provides a solution to the second order ODE~\eqref{eq:ode_2nd_ord} (with $\rho = 0$)
+% \begin{equation*}
+%     x^{t_{0}}_{t} 
+%     = 
+%     e^{-\Gamma (t - t_{0})} x_{t_{0}}^{t_{0}} 
+%     + 
+%     \integrate[t_{0}][t]{s}{%
+%         e^{-\Gamma (t - s)} 
+%         \integ{s}{\infty}{z}{%
+%             e^{-\Gamma (z - s)} \Lambda^{-1} \expect_{t_{0}} \mu_{z}
+%         }
+%     }
+% \end{equation*}
+
+\subsection{Almost Everywhere Derivatives vs.\ Weak Derivatives}
+In~\cite{baldacci_2022}, the domain of the action is taken to be almost everywhere differentiable functions (or almost surely because we work with probability measures).
+On the other hand, we work with weakly differentiable functions.
+
+It is important to note that the notion of an almost everywhere differentiable function is a distinct notion from a weakly differentiable function: there are almost everywhere functions that are not weakly differentiable (e.g. the Heaviside step function), and weakly differentiable functions that are not almost everywhere differentiable.
+Moreover, there are weakly differentiable functions without almost everywhere derivatives.
+On the other hand, weakly differentiable functions on $\Real$ that are square integrable with square integrable derivatives are almost everywhere differentiable (see~\cite[Thm.~8.2]{brezis_2011}).\footnote%
+{
+    For instance, the derivative of the Heaviside step function, which is a delta function, is \emph{not} square integrable; so step function like behavior is not allowed when we require square-integrable derivatives.
+}
+On the other hand, the function $\mu$ does not have any differentiability constraints and so can have all the ridiculous behavior it wants, as long as it is square integrable---but one can argue even this condition can be dropped in practice when searching for optimal solutions (see the discussion in~\cite{baldacci_2022}).
+
+\appendix
+
+\section{Technical Notions}%
+\label{sec:technical_notions}
+This section introduces some technical notions and notation used in this paper.
+The notions discussed here are standard (or at least compatible with standard notions), however we use notation that may diverge slightly from some standards in mathematical analysis when such standards exist.
+
+\subsection{Measurable/Measure Spaces}
+
+\begin{definition}[Measurable Space]
+	A \newword{measurable space} $\newmath{\ms{G}}$ is the data of a set $\newmath{\msSet{G}}$ equipped with a $\sigma$-algebra $\Sigma_{\ms{G}} \subseteq 2^{\msSet{G}}$, and a $\sigma$-ideal $\newmath{N_{\ms{G}}} \subseteq \Sigma_{G}$ of \newword{null sets}.
+\end{definition}
+
+\begin{definition}
+    A measure on a measurable space $\ms{G}$ will mean a measure whose $\sigma$-ideal of null sets that matches the ideal $N_{G}$.
+    When a measurable space is $\ms{G}$ equipped with a measure we will call it a \newword{measure space}.
+\end{definition}
+
+\begin{notation}
+    Instead of working with measures, we will work with its associated expectation value functional on on measurable functions or spaces of random variables.
+\end{notation}
+
+\begin{remark}
+	Null sets are usually not taken as part of the data of a measurable set, but it causes no issues an emphasizes that the notion of almost everywhere equivalence does not require the full data of a measure.
+	Including the notion of null sets also has a strong motivation from a category theorist's perspective.
+\end{remark}
+
+\subsection{Filtered Measurable Spaces}
+In this note $\newmath{\msf{F}}$ will denote a $\NNReal$-filtered measurable space:\footnote%
+{
+    For the categorically inclined, this is the same thing as a functor from the poset $\NNReal$ into the category of measurable spaces and measurable functions.
+}
+with the filtration component $\newmath{\ms{F}_{\leq t}}$ consisting of all relevant events occurring in ``time" $\leq t$.
+The measurable space $\newmath{\ms{F}_{\leq \infty}}$ is the colimit (or ``union'') of all of the $\ms{F}_{\leq t}$.
+All Hilbert spaces will be at most countably infinite (separable).
+
+\subsubsection{Basic Spaces of Random Variables}%
+\label{sec:basic_spaces}
+
+Random variables will be taken to be (weakly) measurable functions defined in the following sense.
+\begin{definition}%
+    \label{def:weakly_measurable}
+	Let $\ms{G}$ be a measurable space, and $B$ a Banach space.
+	Then a function $f \colon \msSet{G} \lto B$ is said to be weakly measurable if for each $\beta \in B^{\vee}$, the function:
+	\begin{equation*}
+		\begin{aligned}
+			\msSet{G} &\lto \NNReal\\
+			g &\lmapsto \beta[f(g)]
+		\end{aligned}
+	\end{equation*}
+	defines a measurable function from $\ms{G}$ to $\Real$ equipped with the Borel $\sigma$-algebra.
+\end{definition}
+
+\begin{definition}[$B$-valued Random Variables]
+    Let $\ms{G}$ be a measurable space and $B$ a Banach space.
+	The \newword{$B$-valued random variables} is defined as the $\Real$-vector space:
+	\begin{equation*}
+		\newmath{\RV^{0}[\ms{G}, B]}
+		\coloneqq 
+		\{f \colon \msSet{G} \lto B : \text{$f$ is weakly measurable} \}/ \sim_{N_{\ms{G}}}
+	\end{equation*}
+	where the equivalence relation $\sim_{N_{\ms{G}}}$ is given by the notion of almost-everywhere equivalence induced by the $\sigma$-ideal $N_{\ms{G}}$ of null sets.
+\end{definition}
+
+
+
+\begin{definition}[Essentially Bounded $B$-valued Random Variables]
+    Let $\ms{G}$ be a measurable space and $B$ a Banach space.
+	An element $x \in \RV^{0}[\ms{G}, B]$ is \newword{essentially bounded} or \newword{$\RV^{\infty}$} if any representative is a.e.\ equivalent to a bounded function $\msSet{G} \rightarrow B$.
+	The space of $\RV^{\infty}$ elements of $\RV^{0}[\ms{G}, B]$ is denoted as $\newmath{\RV^{\infty}[\ms{G}, B]}$
+\end{definition}
+
+% \begin{definition}[$\hs{A}$-valued Random Variables]
+%     Given a measurable space $\ms{G}$ (equipped with a $\sigma$-ideal of measure zero sets) and a (separable) Hilbert space $\hs{A}$, the $\Real$-algebra of $\hs{A}$-valued random variables on $\ms{G}$ is denoted $\RV^{0}[\ms{G}, \hs{A}]$.
+%     Letting $\Borel_{\hs{A}}$ denote the Borel $\sigma$-algebra on $\hs{A}$ generated using the topology induced by the norm on $\hs{A}$, the $\Real$-algebra  $\RV^{0}[\ms{G}, \hs{A}]$ is the $\Real$-algebra of measurable functions $f \colon \ms{G} \rightarrow (\hs{A}, \Borel_{\hs{A}})$, quotiented by almost everywhere equivalence (utilizing the notion of the measure zero $\sigma$-ideal).
+% \end{definition}
+
+\begin{remark}[On Different Notions of Measurability]
+  In order to define our integrals, we will need a random variables to be given by Bochner-measurable (or ``strongly measurable'') functions.
+  However, because our random variables are targeted in a separable Hilbert space, the notion of measurability above (``Borel-measurability'') coincides with the notion of Bochner measurability.
+  Moreover, by Pettis' theorem, because $\hs{A}$ is separable, the notion of Bochner-measurability also coincides with a separate notion of ``weak measurability''.
+  If, for the purposes of abstraction, we need to work with random variables targeted in some non-separable Banach space, then most of our results generalize using Bochner-measurable functions and the Bochner integral.
+\end{remark}
+
+\begin{remark}
+  A function $f \colon \ms{G} \rightarrow \Real^{N}$ is a random variable if and only if its component functions $f_{i} \colon \ms{G} \rightarrow \Real$ are random variables.
+\end{remark}
+
+\subsection{\texorpdfstring{$\RV^{p}$}{Lp} Spaces of Random Variables}
+\begin{definition}
+  Let $f \in \RV^{0}[\ms{G}, B]$, we define the ``absolute value''" $|f| \in \RV^{0}[\ms{G}, \Real]_{+}$ (the subspace of random variables with representatives a.e.\ valued in $\NNReal$) as:
+  \begin{equation}
+      \begin{aligned}
+         \left| \widehat{f} \right| \colon \ms{G} &\lto \Real_{\geq 0}\\
+         g &\lmapsto \|f(g)\|_{B}
+      \end{aligned}
+  \end{equation}
+  where $\widehat{f} \in \mathrm{Fun}(\ms{G}, \Real)$ is any representative of $f$, and $\|-\|_{B}$ denotes the norm on $B$.
+  This is a well-defined notion.
+\end{definition}
+
+
+For any $f \in \RV[\ms{G}, \hs{A}]$, and $p \in \Real$, it is a straightforward exercise to show that one can construct powers $|f|^{p}$ (with the obvious meaning) as a well-defined element of $\RV^{0}[\ms{G}, \Real]$.
+
+Given a measurable space $\msf{G}$, a finite-mass measure on $\ms{G}$ (a probability measure up to rescaling) defines a linear functional $\expect \colon \RV^{0}[\ms{G}, \Real] \lto \Real \cup \{\infty\}$.
+
+\begin{definition}
+	Given a measurable space $\ms{G}$ equipped with an expectation value $\expect$ and a Banach space $B$, for every $p \in \Real - \{0\}$ we define:
+	\begin{equation*}
+		\RV^{p}[\ms{G}, B] 
+		\coloneqq
+		\{ f \in \RV^{0}[\ms{G}, B] : \expect[|f|^{p}] < \infty \}.
+	\end{equation*}
+\end{definition}
+
+\begin{remark}
+    The following results are standard:
+        \begin{enumerate}
+            \item $\RV^{p}[\ms{G}, B]$ is a Banach space for $1 \leq p \leq \infty$ when equipped with the norm
+            $\newmath{\|f\|_{p}} \coloneqq \expect[|f|^{p}]$ for any $f \in \RV^{p}[\ms{G}, B]$.
+            
+            \item Let $\hs{A}$ be a  Hilbert space, then $\RV^{2}[\ms{G}, \hs{A}]$ is a Hilbert space when equipped with the inner product:
+            \begin{equation*}
+               \langle f,g \rangle_{\RV^2[\ms{G}, \hs{A}]}  \coloneqq \expect[\langle f,g \rangle_{\hs{A}}].
+            \end{equation*}
+        \end{enumerate}
+    Somewhat less known is that for $p \in [0, 1)$, $\RV^{p}[\ms{G}, \hs{A}]$ is a quasi-Banach space (the norm satisfies a mild relaxation of the triangle inequality).
+\end{remark}
+
+The usual H\"{o}lder inequality is equivalent to the following statement.
+\begin{remark}[H\"{o}lder's Inequality]
+    Let $1 \leq p,q \leq \infty$.
+    Pointwise multiplication of random variable representatives induces a norm $\leq 1$ map of Banach spaces:
+    \begin{equation*}
+        \RV^{p}[\hs{G}, B] \otimes \RV^{q}[\hs{G}, B] \rightarrow \RV^{r}[\hs{G}, B],
+    \end{equation*}
+    where $1/r = 1/p + 1/q$ and the tensor product is the algebraic tensor product of $\Real$-vector spaces.
+\end{remark}
+
+% \begin{definition}[$\hs{H}$-valued Random Variables]
+%     Given a measurable space $\ms{G}$, let $\RV^{0} \ms{G}$ denote the $\mathbb{R}$-vector space of random variables on $\ms{G}$: formally this is the space of measurable functions $f \colon \ms{G} \rightarrow (\Real, \Borel_{\Real})$, where $\Borel_{\Real}$ is the Borel $\sigma$-algebra on $\Real$.
+% \end{definition}
+
+\subsubsection{Stochastic Processes and Sobolev Spaces}%
+\label{sec:sobelov}
+\textbf{WIP:} This section develops the notion of Sobolev spaces for stochastic processes. The construction follows similar lines to the classical theory of Sobolev spaces on $\Real$, but with the target space being a space of random variables.
+
+In the following, $I$ will denote a closed, connected subset of $\Real$ and $B$ will denote a Banach space.
+
+\begin{definition}%
+\label{def:cinfty_compact_support}
+    Let $U$ be an open subset of $\Real$, then
+    $\SK[U; B]$ is the space of compactly-supported $C^{\infty}$-functions $U \rightarrow B$.
+\end{definition}
+
+\begin{definition}
+    Let $B$ be a Banach space.
+    A $B$-valued stochastic process adapted to a filtered $\msf{F}$ measurable space over $I$ is a function $x \colon I \times \under{\ms{F}_{\leq \infty}} \rightarrow \Real$ such that for every $t \in I$, the function $x(t, -) \colon \under{\ms{F}_{\infty}} \rightarrow B$ is weakly measurable (Definition~\ref{def:weakly_measurable} when restricted to $\under{\ms{F}_{\leq t}}$.
+\end{definition}
+
+Pointwise sums and products of stochastic processes are again stochastic processes, so the collection of stochastic processes forms a $\Real$-algebra, much like random variables.
+\begin{definition}
+  The $\Real$-vector space of $B$-valued stochastic processes adapted to $\msf{F}$ will be denoted $\SP_{\msf{F}}[B]$
+\end{definition}
+Really we should be working with something like a.e.\ equivalence classes of stochastic processes.
+
+
+% \begin{notation}
+%     Let $I$ be a connected, closed subset of $\Real$ (a compact closed interval, an unbounded set of the form $[A, \infty]$, or all of $\Real$).
+%     Then $\newmath{I_{\bullet}}$ is the $I$-filtered measure space given by the natural order on $\Real$: explicitly, $I_{\leq t} \coloneqq \{i \in I \colon i \leq t\}$ equipped with the restricted Lebesgue measure.
+% \end{notation}
+
+
+% \begin{definition}
+%   Let $I$ be a connected, closed subset of $\Real$, and $\msf{F}$ an $I$-filtered measurable space. a stochastic process on $I$ adapted to $\msf{F}$ is a filtration preserving measurable map $x \colon I_{\bullet} \lto \msf{F}$: explicitly this is a measurable map $x \colon I_{\leq \infty} \lto \msf{F}_{\leq \infty}$ such that $x(t)$ is measurable 
+% \end{definition}
+
+\begin{definition}
+	Let $I$ be a connected subset of $\Real$ equipped with the Lebesgue measure, and $\msf{F}$ an $I$-graded measure space with expectation value $\expect$.
+	Then for every $1 \leq p \leq \infty$ we define:
+	\begin{equation*}
+        \newmath{\Sobolev^{k, p}_{\msf{F}}[\hs{A}]} 
+        \coloneqq 
+        \left\{
+        x \in \RV^{p}[I, \msf{F}; \hs{A}]
+        :
+        \tsubc{%
+            $x$ is a stochastic process adapted to $\msf{F}$ \\ with $k$-weak derivatives in $\RV^{p}[I, \msf{F}; \hs{A}]$
+        }
+        \right\}
+	\end{equation*}
+	as the Sobolev space of $\hs{A}$-valued, $\msf{F}$-adapted stochastic processes on $I$ that have $k$-weak derivatives with finite $L^{p}$-norm.
+\end{definition}
+
+
+\begin{definition}
+    Let $x$ be a stochastic process adapted to a measure space $\msf{F}$, filtered with respect to $I$ and equipped with expectation value $\expect$, then for any $0 < p < \infty$ we define
+    \begin{equation}
+        \|x \|_{\RV^{p}}  \coloneqq \left(\expect \int_{I} \|x_{t}\|_{p} \, \dd t \right)^{p}
+    \end{equation}
+    where $\|x_{t}\|_{p}$ is the $p$ norm of the $\Real$-valued random variable $x_{t}$ on $\ms{F}_{\leq t}$
+\end{definition}
+
+Sometimes we will need to consider stochastic processes with \emph{boundary conditions}: such conditions are most natural at the level of equivalence classes, where we consider processes that agree on a set of full measure.
+
+\subsubsection{Weak Derivatives for Stochastic Processes}
+The notion of weak derivative extends naturally to Banach-space-valued functions, and hence to stochastic processes.
+
+\begin{definition}[Weak Derivative]
+Let $x \colon I \to B$ be a $B$-valued function on an interval $I$. We say that $x$ has a \newword{weak derivative} $\dot{x} \in L^{1}_{\text{loc}}(I; B)$ if for every test function $\phi \in \SK(I; \Real)$ (smooth, compactly supported), we have:
+\begin{equation*}
+    \int_{I} x_{t} \dot{\phi}_{t} \, \dd t = -\int_{I} \dot{x}_{t} \phi_{t} \, \dd t,
+\end{equation*}
+where the integrals are Bochner integrals in $B$.
+\end{definition}
+
+For stochastic processes, the weak derivative is defined pointwise in the probability space: a stochastic process $x$ adapted to $\msf{F}$ has a weak derivative $\dot{x}$ if for $\expect$-almost every outcome, the sample path $t \mapsto x_{t}(\omega)$ has a weak derivative in the classical sense.
+
+\begin{definition}[Sobolev Space of Stochastic Processes]
+$\Sobolev^{k, p}_{\msf{F}}[\hs{A}]$ is the space of stochastic processes $x$ adapted to $\msf{F}$ such that: 
+\begin{enumerate}
+    \item $x$ has $k$-weak derivatives $x^{(1)}, x^{(2)}, \ldots, x^{(k)}$, each of which is an $\msf{F}$-adapted stochastic process;
+
+    \item $\|x^{(j)}\|_{\RV^{p}} < \infty$ for every $0 \leq j \leq k$.
+\end{enumerate}
+\end{definition}
+
+\begin{remark}
+    If $1 \leq p \leq \infty$ then $\Sobolev^{k, p}_{\msf{F}}[\hs{A}]$ becomes a Banach space when equipped with the norm 
+        \begin{equation}
+         \|x \|_{k,p} \coloneqq 
+         \left[ 
+             \sum_{j = 0}^{k} \left(\left\| x^{(j)} \right\|_{\RV^{p}} \right)^{p}
+         \right]^{1/p}
+        \end{equation}
+    Moreover, it is a Hilbert space whenever $p = 2$.
+\end{remark}
+
+\subsubsection{Traces and Boundary Values}
+A key feature of Sobolev spaces is the existence of well-defined boundary values (traces) for functions with sufficient regularity.
+
+\begin{proposition}[Trace Theorem for Stochastic Processes]
+Let $I = [A, B]$ be a bounded interval. For $x \in \Sobolev^{1, p}_{\msf{F}}[\hs{A}]$ with $p \geq 1$, the boundary values $x_{A}$ and $x_{B}$ are well-defined as elements of $\RV^{p}[\ms{F}_{\leq A}; \hs{A}]$ and $\RV^{p}[\ms{F}_{\leq B}; \hs{A}]$ respectively. Moreover, the trace maps
+\begin{align*}
+    \gamma_{A} &\colon \Sobolev^{1, p}_{\msf{F}}[\hs{A}] \to \RV^{p}[\ms{F}_{\leq A}; \hs{A}], \quad x \mapsto x_{A},\\
+    \gamma_{B} &\colon \Sobolev^{1, p}_{\msf{F}}[\hs{A}] \to \RV^{p}[\ms{F}_{\leq B}; \hs{A}], \quad x \mapsto x_{B},
+\end{align*}
+are bounded linear operators.
+\end{proposition}
+
+\begin{proof}[Sketch of Proof]
+The proof follows the classical trace theorem for Sobolev spaces (see, e.g.,~\cite[Ch.~5]{evans_2010} or~\cite{brezis_2011}). The key observation is that for $x \in \Sobolev^{1,p}(I; B)$ where $B$ is a Banach space, the fundamental theorem of calculus holds in the weak sense:
+\begin{equation*}
+    x_{t} - x_{s} = \int_{s}^{t} \dot{x}_{\tau} \, \dd \tau
+\end{equation*}
+for almost every $s, t \in I$. This implies that $x$ has a continuous representative (after modification on a null set), and hence boundary values are well-defined. The boundedness of the trace operator follows from H\"{o}lder's inequality.
+\end{proof}
+
+\begin{remark}
+For unbounded intervals $I = [A, \infty)$, the trace at infinity requires additional decay conditions. In our application, the square-integrability conditions on $x$ and $\dot{x}$ ensure that $\lim_{t \to \infty} x_{t} = 0$ in an appropriate sense.
+\end{remark}
+
+\subsubsection{Sobolev Embedding}
+A crucial property is that Sobolev functions with sufficient derivatives are continuous.
+
+\begin{proposition}[Sobolev Embedding]
+For $p > 1$, the space $\Sobolev^{1, p}_{\msf{F}}[\hs{A}]$ embeds continuously into the space of continuous $\hs{A}$-valued stochastic processes. In particular, if $x \in \Sobolev^{1, 2}_{\msf{F}}[\hs{A}]$, then $x$ has a continuous representative $\expect$-almost surely.
+\end{proposition}
+
+This embedding is essential for our variational problem: it ensures that the optimal solution, being in $\Sobolev^{1,2}$, has well-defined pointwise values and satisfies the boundary conditions in a classical sense.
+
+% \begin{definition}
+%   The space of $\hs{A}$-valued random variables (measurable functions) on a measure space $\ms{O}$ will be denoted $\RV[\ms{O}, ]$
+% 
+% \end{definition}
+
+% \begin{remark}
+%     The inner product on any Hilbert space can be twisted by a (trace-class) positive definite endomorphism of that Hilbert space.
+%     With this in mind, for any $\Lambda$ a positive-definite endomorphism of $\hs{A}$, we can define the Hilbert space $\hs{A}_{\Lambda}$ as the Hilbert space with same underlying vector space as $\hs{A}$ and twisted inner product: $\langle - , - \rangle_{\Lambda} \coloneqq \langle - , \Lambda - \rangle = \langle \Lambda^{1/2} - , \Lambda^{1/2} - \rangle$.
+%     Note that there is a unitary map:
+%     \begin{equation*}
+%         \begin{aligned}
+%             \hs{A} &\longrightarrow \hs{A}_{\Lambda}\\
+%             h &\longmapsto \Lambda^{-1/2} h
+%         \end{aligned}
+%     \end{equation*}
+%     with inverse
+%     \begin{equation*}
+%         \begin{aligned}
+%             \hs{A}_{\Lambda} &\longrightarrow \hs{A}\\
+%             h &\longmapsto \Lambda^{1/2} h
+%         \end{aligned}
+%     \end{equation*}
+%     These unitary transformations secretly plays a role in the following.
+% \end{remark}
+
+
+\section{Euler-Lagrange Equations For Stochastic Processes}%
+\label{sec:euler_lagrange}
+\textbf{WIP:} The following section provides a technique for determining critical points for a certain class of functionals on stochastic processes, by generalizing standard calculus of variation techniques that are often used for deterministic systems in physics: effectively, we are extending ideas the calculus of variations from the domain of ``continuous'' or topological quantities to the domain of ``measurable'' quantities.
+%$Only a triplet of overly-optimistic physicists ignorant of the stochastic calculus might extremize a ``stochastic action'' in such a manner: however, one of the author's experience in extending concepts from topology to measure theory hints that this is not out-of-line.
+We remark that there is already a rigorous theory of the calculus of variations that goes by the name of the Malliavin calculus. 
+Yet, the technique described here may be more palatable for those with training in physics, or who have more of a differentio-geometric inclination toward mathematics.
+
+\begin{remark}
+    To make the discussion here rigorous, various spaces of stochastic processes must be defined properly, and the definition of various derivative operators must be elucidated.
+    If one attempts to use these techniques with the It\^{o} integral, there will likely be neglected quadratic variation terms when using integration by parts (depending on the space of random variables under consideration).
+    Instead, we only consider integration of strongly measurable functions with respect to Bochner integrals (essentially Lebesgue integrals for Banach-space valued integrands)\footnote%
+    {
+        It may be possible to generalize things to weakly measurable functions and Pettis integrals.
+    }
+    under this assumption, we do have an integration-by-parts formula.\footnote%
+    {
+        When working with It\^{o} integrals, it may be possible to translate back to Bochner integrals using the It\^{o} isometry~\cite[Corollary 3.1.7]{oksendal_2010}.
+    }
+    A rigorous treatment of this discussion that fixes crucial details may easily result in a recovery of the Maillavin calculus.
+\end{remark}
+
+\subsection{Setup}
+Let $\msf{F}$ be a filtered measurable space over some (possibly unbounded) interval $I$, equipped with an expectation value $\expect$, for simplicity of notation we define:
+\begin{equation*}
+    \newmath{\SP{F}} \coloneqq \{x \in \Sobolev^{1,2}[I, \msf{F}; \hs{A}] : (\expect_{t_{0}} x)(0) = 0 \}
+\end{equation*}
+by $x(0) = x_{0}$ we mean that the trace of $x$ at $t = 0$ equals the constant random variable $x_{0}$.
+
+$\SP{F}$ is the Sobolev space of twice-differentiable $\hs{A}$-valued stochastic processes adapted to $\msf{F}$. 
+
+Given a function $\Lag \in C^{2}(\Real^3)$ (the space of twice-continuously differentiable functions on $\Real^3$),\footnote%
+{
+    The assumption on twice-continuous differentiability will come into play when we use integration-by-parts to derive equation~\eqref{eq:grad_action_final}.
+    Its possible that this can be relaxed to a condition involving weak differentiability.
+}
+and an interval $[A, B] \subseteq (-\infty, \infty]$, we define the ``action functional":
+\begin{equation*}
+    \begin{aligned}
+        S \colon \SP{F} &\lto \RV^{1} \ms{F}_{\leq \infty}\\
+            x &\lmapsto \int_{A}^{B} \Lag[x, \dot{x}, t] \, \dd t
+    \end{aligned}
+\end{equation*}
+where $\RV^{1} \ms{F}_{\leq \infty}$ is the space of random variables on $\ms{F}_{\leq \infty}$ with finite $L^{1}$-norm with respect to $\expect$, and $\integ{A}{B}{t}{}$ is a suitable integral, which forms a linear functional:
+\begin{equation*}
+	\integ{A}{B}{t}{[-]} \colon \SP{F}^{1}(B)  \lto L^{1}[\ms{F}_{\leq B}, B];
+\end{equation*}
+we assume it's a Bochner integral.
+
+There is an associated $\Real$-valued action functional defined by:
+\begin{equation*}
+    \ES \coloneqq \expect \circ S \colon \SP{F} \rightarrow \Real.
+\end{equation*}
+
+Suppose we wish to find
+\begin{equation}
+    \argmax_{\{x: x(0) = x_{0}\}} \ES[x].
+\end{equation}
+Because $\expect$ is linear, we can try to adapt traditional variational-calculus arguments to derive the Euler-Lagrange equations for finding extrema.
+Determining the rigor behind these arguments will involve, in part, to writing down precise definitions for the Banach spaces of random variables that are involved, and ensuring that the action functional has suitable properties to make sense of its total derivative.
+One subtlety is that our boundary conditions are one-sided: namely, there appears to be no constraint on $\lim_{t \rightarrow \infty} x(t)$---in practice, $\infty$ should be replaced with a finite time which coincides with the traditional setup anyway;
+for this reason, we will see that the Euler-Lagrange equations come along with an additional constraint.
+
+\begin{definition}
+    Let $J \colon \SP{F} \rightarrow \mathbb{R}$ be a functional on $\SP{F}$. 
+    $J$ is \newword{differentiable at $x \in \SP{F}$} if for every $\eta \in C^{\infty}_{F}$, the quantity:
+    \begin{equation}
+        \newmath{\delta_{x} J [\eta]} \coloneqq \lim_{\epsilon \rightarrow 0} \frac{J[x + \epsilon \eta] - J[x]}{\epsilon}
+        =
+        \Deval{h}{h=0}
+        J[x + h \eta]
+        \label{eq:functional_partial}
+    \end{equation}
+    exists in $\Real$, and the corresponding map
+    \begin{equation}
+        \begin{aligned}
+            \delta_{x} J \colon C^{\infty}_{F} &\lto \Real\\
+            \eta &\lmapsto \delta_{x} J [\eta]
+        \end{aligned}
+    \end{equation}
+    is a bounded linear functional (i.e., continuous with respect to the topology on $\SP{F}$), then $J$ is differentiable at $x$ and $\delta_{x} J$ is called the variational derivative of $J$ at $x$.
+   % \footnote%
+   % {
+   %   Really we want $\eta$ to be thought of as living in the tangent space $T_{x} \SP{F}$; since $\SP{F}$ is linear, this is identifiable with $\SP{F}$.
+   % } 
+   % If, for every $x \in \SP{F}$, the following limit exists
+   % \begin{equation}
+   %     \lim_{\epsilon \rightarrow 0} \frac{J[x + \epsilon \eta] - J[x]}{\epsilon}
+   %     =
+   %     \Deval{h}{h=0}
+   %     J[x + h \eta]
+   %     \label{eq:functional_partial}
+   % \end{equation}
+   % where $h \in \mathbb{R}$.
+%    then we define the directional derivative of $J$ along $\eta$ as the functional:
+%    \begin{equation}
+%        \begin{aligned}
+%            \delta_{x} J \colon \SP{F} &\lto \Real\\
+%            x &\lmapsto  \Deval{h}{h=0} J[x + h \eta].
+%        \end{aligned}
+%    \end{equation}
+\end{definition}
+
+where $h \in \mathbb{R}$.
+Of course, this definition assumes that the limit in $\eqref{eq:functional_partial}$ exists. 
+In the following, we assume that $\delta_{x} \ES [\eta]$ exists for all $\eta \in \SP{F}$.
+
+% \begin{remark}
+%     The term $x + \epsilon \eta$ in~\eqref{eq:functional_partial} is the flow, beginning at $x$, along the direction provided by $\eta$.
+%     However, it may be more precise to replace $x + \epsilon \eta$ with some kind solutions to a first order ODE ``stochastic flow" along the direction $\eta$.
+% \end{remark}
+
+% Dustin-Tom games
+% \begin{equation}
+% L=\frac{1}{2}\dot{x}^2+\frac{1}{2}m x^2\rightarrow
+% \delta_x\left(L\right) = \left[\dot{x}(\delta_x\dot{x})+m x(\delta x)\right]=\left(\ddot{x}+m x\right)\delta x
+% \end{equation}
+% \begin{equation}
+% \int dt \delta_x\frac{d}{dt}\left[\dot{x}^2\right]=\int dt\left(\right)
+% \end{equation}
+
+
+Assuming we can perform the identities:\footnote{
+    The operator $\D{h}$ here is representative of a \emph{weak} derivative.
+}
+\begin{align*}
+   \D{h} \expect[r(h)] &= \expect\left[\D{h} r(h) \right]\\
+   \D{h} \int_{A}^{B} f_{t}(h) \, \dd t &= \int_{A}^{B} \D{h} f_{t}(h)  \, \dd t
+\end{align*}
+where $r \colon \Real \lto \RV \mathfrak{F}_{\leq \infty}$ is a differentiable family of variables on $\mathfrak{F}_{\leq \infty}$, and $f \colon \Real \lto \SP{F}$ is a differentiable family of stochastic processes adapted to $\mathfrak{F}$, then we have:
+\begin{align*}
+  \delta_{x} \ES[\eta] 
+  &=
+  \Deval{h}{h=0}\expect \int_{A}^{B} \Lag[x_{t} + h \eta_{t}, \dot{x}_{t} + h \dot{\eta_{t}}, t] \, \dd t\\
+  &=
+  \expect 
+  \int
+  \Deval{h}{h=0} \Lag[x_{t} + h \eta_{t}, \dot{x}_{t} + h \dot{\eta_{t}}, t] \, \dd t\\
+  &= 
+  \expect \int_{A}^{B} 
+  \left \{
+      \eta_{t} \frac{\partial \Lag}{\partial x_{t}}
+      +
+      \dot{\eta}_{t} \frac{\partial \Lag}{\partial \dot{x}_{t}}
+  \right \}
+  \, \dd t
+\end{align*}
+Next we assume that, when things are suitably defined, stochastic integration by parts is possible, i.e.:  
+\begin{equation}
+    \left[ \eta_{t} f_{t} \right]_{A}^{B} 
+    =
+      \int_{A}^{B} \frac{\dd \eta_{t}}{\dd t} f_{t} \, \dd t 
+    + \int_{A}^{B} \eta_{t} \frac{\dd f_{t}}{\dd t} \, \dd t
+\label{eq:integration_by_parts}
+\end{equation}
+for any stochastic process $f$.
+
+\begin{remark}[Integration by Parts]%
+    \label{rem:int_by_parts}
+    The integration by parts assumption~\eqref{eq:integration_by_parts} is, perhaps, the most sketchy assumption and may require slight modification as, for instance, the It\^{o} integral does not satisfy standard integration by parts: having an extra ``quadratic covariation'' term on the right hand side.
+    On the other hand, if either $\eta_{t}$ or $f_{t}$ have finite variation, this may be a non-issue.
+\end{remark}
+
+If, however, we assume the usual integration by parts this allows us to write:
+\begin{equation}
+    \begin{aligned}
+          \delta_{x} \ES[\eta]
+          =
+          &\expect
+          \integ{A}{B}{t}{%
+          \eta_{t} 
+          \left\{
+            \frac{\partial \Lag}{\partial x_{t}}
+            -
+            \D{t} \frac{\partial \Lag}{\partial \dot{x}_{t}}
+          \right\}
+          }\\
+          &+
+          \left[ 
+          \expect\left\{ \eta_{t} \frac{\partial \Lag}{\partial \dot{x}_{t}} \right\} \right]_{A}^{B}
+    \end{aligned}
+    \label{eq:grad_action_final}
+\end{equation}
+
+At a maximum we suspect that the hypothetical 1-form $\delta \ES$ vanishes;
+this should be the same as supposing that $\grad_{\eta}{\ES} = 0$ for every possible stochastic ``direction" $\eta$.
+Now, suppose that the bilinear form:
+\begin{equation*}
+    \begin{aligned}
+         \langle -,- \rangle_{\SP{F}} \colon \SP{F} \times \SP{F} &\lto \Real\\
+        (\alpha, \beta) &\lmapsto \langle \alpha, \beta \rangle_{\SP{F}} \coloneqq \expect \int_{A}^{B} \langle \alpha_{t},  \beta_{t} \rangle_{\hs{A}} \, \dd t
+    \end{aligned}
+\end{equation*}
+defines a non-degenerate $\Real$-valued inner product on $\SP{F}$.
+Then we can express the variational derivative as:
+\begin{equation*}
+  \delta_{x} \ES[\eta]
+  =
+  \left \langle
+  \eta_{t},
+    \frac{\partial \Lag}{\partial x_{t}}
+    -
+    \D{t} \frac{\partial \Lag}{\partial \dot{x}_{t}}
+  \right \rangle_{\SP{F}}
+  +
+  \underbrace{%
+  \left[ 
+  \expect\left\{ \eta_{t} \frac{\partial \Lag}{\partial \dot{x}_{t}} \right\} \right]_{A}^{B}
+  }_{\text{boundary term}}.
+\end{equation*}
+
+\subsection{Extrema with Two-Sided Boundary Conditions}
+Now assume we are looking for extrema: i.e. $\grad_{\eta}\ES = 0$ for all $\eta$: 
+With boundary conditions at $t = A$ and $t = B$, the allowable variations $\eta$ must satisfy $\eta_{A} = \eta_{B} = 0$;
+hence the boundary term must vanish and we have the usual Euler-Lagrange equations:
+\begin{equation*}
+  0 = 
+    \frac{\partial \Lag}{\partial x}
+    -
+    \D{t} \frac{\partial \Lag}{\partial \dot{x}_{t}}
+\end{equation*}
+re-interpreted in the realm of stochastic processes.
+
+\subsection{Extrema with a Single-Sided Boundary Condition}
+On the other hand, we may be interested in \emph{one-sided} boundary conditions: in this section we will suppose that there is only a boundary condition at the ``initial-time'' $t = A$.
+This constrains the deformation $\eta$ to satisfy $\eta_{B} = 0$, while $\eta_{A} \in \RV \ms{F}_{\leq A}$ is allowed to freely take on whatever value it would like.
+
+We wish to solve the equation:
+\begin{equation*}
+  0
+  =
+  \left \langle
+  \eta_{t},
+    \frac{\partial \Lag}{\partial x_{t}}
+    -
+    \D{t} \frac{\partial \Lag}{\partial \dot{x}_{t}}
+  \right \rangle_{\SP{F}}
+  +
+  \expect
+  \left \{
+      \eta_{A} \left.\frac{\partial \Lag}{\partial \dot{x}_{t}} \right|_{t = A} 
+  \right\}.
+\end{equation*}
+Because $\expect$ can be used to form a non-degenerate inner-product on $\RV^{2} \ms{F}_{\leq A}$, we have the pair of equations:
+\begin{align*}
+    0 &= 
+    \frac{\partial \Lag}{\partial x}
+    -
+    \D{t} \frac{\partial \Lag}{\partial \dot{x}_{t}},\\
+    0 &= \left.\frac{\partial \Lag}{\partial \dot{x}_{t}} \right|_{t = A}.
+\end{align*}
+\begin{remark}
+The argument above can be made rigorous by using bump functions to show that the Euler-Lagrange equations must hold in an $\epsilon$-neighborhood of any interior point. A proof by contradiction then shows they must vanish on any positive measure set, hence almost everywhere. This in turn implies the vanishing of the boundary condition separately.
+\end{remark}
+
+\subsection{Application to Optimal Turnover}
+We now apply the Euler-Lagrange framework to our optimal turnover problem. Recall from \S\ref{sec:a_careful_study_of_action_functional} that the Lagrangian takes the form:
+\begin{equation*}
+    \Lag[x_{t}, \dot{x}_{t}, t] = e^{-\rho t} \left( \langle \mu_{t}, x_{t} \rangle_{\hs{A}} - \frac{1}{2} \langle \dot{x}_{t}, \Lambda \dot{x}_{t} \rangle_{\hs{A}} - \frac{\kappa}{2} \langle x_{t}, \Omega x_{t} \rangle_{\hs{A}} \right).
+\end{equation*}
+
+The partial derivatives are:
+\begin{align*}
+    \frac{\partial \Lag}{\partial x_{t}} &= e^{-\rho t} \left( \mu_{t} - \kappa \Omega x_{t} \right),\\
+    \frac{\partial \Lag}{\partial \dot{x}_{t}} &= -e^{-\rho t} \Lambda \dot{x}_{t}.
+\end{align*}
+
+Computing the time derivative of the second expression:
+\begin{equation*}
+    \D{t} \frac{\partial \Lag}{\partial \dot{x}_{t}} = \rho e^{-\rho t} \Lambda \dot{x}_{t} - e^{-\rho t} \Lambda \ddot{x}_{t}.
+\end{equation*}
+
+The Euler-Lagrange equation $\frac{\partial \Lag}{\partial x} = \D{t} \frac{\partial \Lag}{\partial \dot{x}}$ becomes:
+\begin{equation*}
+    e^{-\rho t} \left( \mu_{t} - \kappa \Omega x_{t} \right) = \rho e^{-\rho t} \Lambda \dot{x}_{t} - e^{-\rho t} \Lambda \ddot{x}_{t}.
+\end{equation*}
+
+Dividing by $e^{-\rho t}$ (which is always positive) and rearranging:
+\begin{equation*}
+    \Lambda \ddot{x}_{t} + \rho \Lambda \dot{x}_{t} - \kappa \Omega x_{t} = -\mu_{t},
+\end{equation*}
+which recovers exactly the second-order ODE~\eqref{eq:ode_2nd_ord} derived earlier.
+
+\subsubsection{Transversality Condition}
+For the infinite-horizon problem with initial condition $x(0) = x_{0}$, we must also satisfy the transversality condition (the second equation from the one-sided boundary analysis):
+\begin{equation*}
+    \lim_{t \to \infty} \left. \frac{\partial \Lag}{\partial \dot{x}_{t}} \right|_{t} = 0.
+\end{equation*}
+Substituting our Lagrangian:
+\begin{equation*}
+    \lim_{t \to \infty} e^{-\rho t} \Lambda \dot{x}_{t} = 0.
+\end{equation*}
+
+For $\rho > 0$, this is satisfied whenever $\dot{x}_{t}$ grows slower than $e^{\rho t}$---which is guaranteed by our square-integrability assumptions. For $\rho = 0$, the condition requires that $\dot{x}_{t} \to 0$ as $t \to \infty$, which follows from $\dot{x} \in L^{2}[0, \infty)$.
+
+\begin{remark}[Uniqueness of Solutions]
+The strict concavity of the action functional $\ES$ (inherited from the negative-definiteness of the quadratic terms in $\Lag$) ensures that any critical point is automatically a global maximum. Combined with the uniqueness theorem for solutions to the second-order ODE with specified initial conditions, this guarantees that the optimal strategy is unique.
+\end{remark}
+
+\subsection{Summary}
+The calculus of variations framework developed in this section provides a systematic approach to deriving the Euler-Lagrange equations for stochastic optimization problems. The key steps are:
+\begin{enumerate}
+    \item Define the action functional $\ES$ on an appropriate Sobolev space of stochastic processes;
+    \item Compute the variational derivative $\delta_{x} \ES[\eta]$ using differentiation under the integral sign;
+    \item Apply integration by parts to transfer derivatives from the variation $\eta$ to the Lagrangian terms;
+    \item Set the variational derivative to zero and use the fundamental lemma of calculus of variations to obtain the Euler-Lagrange equations;
+    \item Handle boundary conditions appropriately (fixed boundaries eliminate boundary terms; free boundaries give transversality conditions).
+\end{enumerate}
+
+While we have presented this framework somewhat heuristically, all steps can be made rigorous using the theory of Bochner integrals for Banach-space-valued functions and the Sobolev space theory developed in \S\ref{sec:sobelov}. The main technical requirement is that we work with Lebesgue-type integrals (rather than It\^{o} integrals) so that the standard integration-by-parts formula holds.
+
+\bibliography{optimal-turnover-refs}
+
+\end{document}
