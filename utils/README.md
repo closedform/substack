@@ -5,7 +5,7 @@ Convert LaTeX documents to Substack-friendly HTML.
 ## Workflow
 
 For your Substack article:
-1. Write in LaTeX or Markdown
+1. Write in LaTeX, Markdown, or any Pandoc-supported format (`.docx`, `.ipynb`, etc.)
 2. Run `uv run doc2substack.py article.tex` (or `.md`)
 3. Open the HTML in a browser
 4. Select all (Cmd+A) and copy (Cmd+C)
@@ -14,7 +14,7 @@ For your Substack article:
 
 ## Features
 
-- **Supports LaTeX and Markdown**: Accepts `.tex` or `.md` files as input
+- **Supports Broad Input**: Accepts `.tex`, `.md`, `.docx`, `.ipynb` and other Pandoc formats
 - **Unicode inline math**: Simple expressions like `$\alpha$`, `$w^i$`, `$g_{ij}$` are converted to Unicode (α, wⁱ, gᵢⱼ) for natural text flow
 - **High-DPI equation images**: Complex display math (`$$...$$`) renders as sharp images via CodeCogs
 - **Automatic cleanup**: Removes pandoc artifacts, fixes environments, cleans formatting

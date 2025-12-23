@@ -1,8 +1,6 @@
 # doc2substack: A Bridge for Mathematical Writing
 
-If you write about physics, math, or quantitative finance, you know the pain of moving from your writing environment to the web.
-
-You have a beautiful LaTeX document or a Markdown file full of carefully crafted equations. You want to publish it on Substack. But when you paste it in, the math breaks. Superscripts detach, logic symbols vanish, and complex equations turn into garbage.
+If you write about physics/math/quantitative finance/etc., you know the pain of moving from your writing environment to substack: you have a beautiful LaTeX document or Markdown file full of carefully crafted equations and when you try to paste it in, the math breaks...superscripts detach, logic symbols vanish, and complex equations turn into garbage.
 
 **doc2substack** is a lightweight, open-source utility that converts your technical documents into clean, Substack-ready HTML. It preserves your prose, converts inline math to native Unicode for smooth reading, and renders complex display math as crisp, high-DPI images.
 
@@ -16,7 +14,7 @@ The utility is open source and available directly in the repository:
 
 The script is a single Python file with no complex dependencies (just standard Python + `pandoc`).
 
-1.  **Write naturally:** Create your post in LaTeX (`.tex`) or Markdown (`.md`).
+1.  **Write naturally:** Write your post in LaTeX (`.tex`), Markdown (`.md`), or any other Pandoc-supported format (`.docx`, `.ipynb`, etc.).
 2.  **Run the converter:**
     ```bash
     python substack/utils/doc2substack.py my_post.md
