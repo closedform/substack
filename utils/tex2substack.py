@@ -8,7 +8,7 @@ Handles:
 - Prose cleanup: removes raw LaTeX fragments, fixes subscripts/superscripts
 
 Usage:
-    uv run main.py input.tex [--output output.html] [--dpi 200]
+    uv run tex2substack.py input.tex [--output output.html] [--dpi 200]
 """
 import argparse
 import re
@@ -297,9 +297,9 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-    uv run main.py article.tex
-    uv run main.py article.tex --output article_substack.html
-    uv run main.py article.tex --dpi 300 --title "My Article"
+    uv run tex2substack.py article.tex
+    uv run tex2substack.py article.tex --output article_substack.html
+    uv run tex2substack.py article.tex --dpi 300 --title "My Article"
         """
     )
     parser.add_argument('input', type=Path, help='Input LaTeX file (.tex)')
