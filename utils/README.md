@@ -1,4 +1,4 @@
-# tex2substack
+# doc2substack
 
 Convert LaTeX documents to Substack-friendly HTML.
 
@@ -18,19 +18,19 @@ Convert LaTeX documents to Substack-friendly HTML.
 
 ```bash
 # LaTeX input
-uv run tex2substack.py article.tex
+uv run doc2substack.py article.tex
 
 # Markdown input
-uv run tex2substack.py article.md
+uv run doc2substack.py article.md
 
 # Custom output file
-uv run tex2substack.py article.tex --output article_substack.html
+uv run doc2substack.py article.tex --output article_substack.html
 
 # Higher DPI for sharper equations
-uv run tex2substack.py article.tex --dpi 300
+uv run doc2substack.py article.tex --dpi 300
 
 # With custom title
-uv run tex2substack.py article.tex --title "My Article Title"
+uv run doc2substack.py article.tex --title "My Article Title"
 ```
 
 ## How It Works
@@ -44,7 +44,7 @@ uv run tex2substack.py article.tex --title "My Article Title"
 
 For your Substack article:
 1. Write in LaTeX
-2. Run `uv run tex2substack.py article.tex`
+2. Run `uv run doc2substack.py article.tex`
 3. Open the HTML in a browser
 4. Select all (Cmd+A) and copy (Cmd+C)
 5. Paste into Substack editor
