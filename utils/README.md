@@ -5,8 +5,8 @@ Convert LaTeX documents to Substack-friendly HTML.
 ## Workflow
 
 For your Substack article:
-1. Write in LaTeX
-2. Run `uv run doc2substack.py article.tex`
+1. Write in LaTeX or Markdown
+2. Run `uv run doc2substack.py article.tex` (or `.md`)
 3. Open the HTML in a browser
 4. Select all (Cmd+A) and copy (Cmd+C)
 5. Paste into Substack editor
