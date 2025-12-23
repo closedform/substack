@@ -78,6 +78,10 @@ The tool attempts to convert inline math (like `$\alpha$`) to Unicode characters
 
 **Recommendation:** If an expression is complex, move it to a **display block** (`$$...$$` or `\begin{equation}...\end{equation}`). These are automatically rendered as beautiful, high-DPI images that center perfectly in your article.
 
+## Known Limitations
+
+- **Color Inversion**: Substack's color inversion settings (e.g., dark mode) can sometimes cause equation images to blend into the background, making them difficult to read.
+
 ## Requirements
 
 - Python 3.11+
