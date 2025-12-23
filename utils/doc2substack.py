@@ -172,7 +172,7 @@ def convert_inline_math_to_unicode(content: str) -> str:
 def pandoc_to_markdown(input_path: Path) -> str:
     """Convert any supported format (LaTeX, docx, ipynb, etc.) to Markdown using pandoc."""
     result = subprocess.run(
-        ['pandoc', str(input_path), '-t', 'markdown', '--wrap=none'],
+        ['pandoc', str(input_path), '-s', '-t', 'markdown', '--wrap=none'],
         capture_output=True,
         text=True,
         check=True
@@ -203,6 +203,45 @@ def clean_markdown(md_content: str) -> str:
     content = re.sub(r'\\"', '"', content)
     
     return content
+
+def preprocess_latex_numbering(tex_content: str) -> str:
+    """
+    Inject \tag{N} into \begin{equation} environments in LaTeX content.
+    This ensures that when pandoc converts it to $$, the number is preserved
+    and rendered by webtex.
+    """
+    counter = 1
+    
+    def repl(match):
+        nonlocal counter
+        content = match.group(0)
+        
+        # Check if already tagged or has nonumber
+        if r'\tag' in content or r'\nonumber' in content:
+            return content
+            
+        # Inject tag before \end{equation}
+        # match.group(1) is \begin{equation}
+        # match.group(2) is content
+        # match.group(3) is \end{equation}
+        # But our regex below will be simpler
+        
+        inner = match.group(1)
+        res = f'\\begin{{equation}}{inner} \\tag{{{counter}}} \\end{{equation}}'
+        counter += 1
+        return res
+
+    # Match \begin{equation} ... \end{equation} (non-greedy)
+    # Using re.DOTALL to match across lines
+    pattern = r'\\begin\{equation\}(.*?)\\end\{equation\}'
+    result = re.sub(pattern, repl, tex_content, flags=re.DOTALL)
+    
+    # Also handle align environment if we want to number it? 
+    # Usually align numbers every line unless \nonumber is used.
+    # For now, let's stick to 'equation' as that's the main request.
+    # Handling 'align' numbering accurately is harder (one per line).
+    
+    return result
 
 
 def markdown_to_html(md_path: Path, output_path: Path, dpi: int = 200, title: str = "") -> None:
@@ -302,7 +341,28 @@ def convert_to_substack(
     else:
         # Let pandoc handle conversion for .tex, .docx, .ipynb, etc.
         print(f"  [1/5] Converting {input_path.suffix} to Markdown via pandoc...")
-        md_content = pandoc_to_markdown(input_path)
+        
+        # Special handling for LaTeX to preserve equation numbering
+        if input_path.suffix.lower() == '.tex':
+            with open(input_path, 'r', encoding='utf-8') as f:
+                tex_content = f.read()
+            
+            # Preprocess to inject \tag{} for equation environments
+            # This is necessary because pandoc converts \begin{equation} to $$..$$ losing the number
+            tex_content = preprocess_latex_numbering(tex_content)
+            
+            # Write to temporary file for pandoc
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.tex', delete=False) as f:
+                f.write(tex_content)
+                temp_tex_path = Path(f.name)
+            
+            try:
+                md_content = pandoc_to_markdown(temp_tex_path)
+            finally:
+                if temp_tex_path.exists():
+                    temp_tex_path.unlink()
+        else:
+            md_content = pandoc_to_markdown(input_path)
     
     # Step 2: Clean up Markdown
     print("  [2/5] Cleaning and normalizing Markdown...")

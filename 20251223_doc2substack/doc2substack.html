@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>tmpu8hdih7o</title>
+  <title>doc2substack: A Bridge for Mathematical Writing</title>
   <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -90,6 +90,17 @@
       border-left: 2px solid #e6e6e6;
       color: #606060;
     }
+    div.abstract {
+      margin: 2em 2em 2em 2em;
+      text-align: left;
+      font-size: 85%;
+    }
+    div.abstract-title {
+      font-weight: bold;
+      text-align: center;
+      padding: 0;
+      margin-bottom: 0.5em;
+    }
     code {
       font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
@@ -169,155 +180,84 @@
       vertical-align: middle;
     }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
-    /* CSS for syntax highlighting */
-    html { -webkit-text-size-adjust: 100%; }
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { color: #008000; } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { color: #008000; font-weight: bold; } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
 </head>
 <body>
-<h1 id="doc2substack-a-bridge-for-mathematical-writing">doc2substack: A
-Bridge for Mathematical Writing</h1>
-<p>If you write about physics, math, or quantitative finance, you know
-the pain of moving from your writing environment to the web.</p>
-<p>You have a beautiful LaTeX document or a Markdown file full of
-carefully crafted equations. You want to publish it on Substack. But
-when you paste it in, the math breaks. Superscripts detach, logic
-symbols vanish, and complex equations turn into garbage.</p>
+<header id="title-block-header">
+<h1 class="title"><strong>doc2substack: A Bridge for Mathematical
+Writing</strong></h1>
+<div class="abstract">
+<div class="abstract-title">Abstract</div>
+<p>If you write about physics/math/quantitative finance/etc., you know
+the pain of moving from your writing environment to Substack: you have a
+beautiful LaTeX document or Markdown file full of carefully crafted
+equations and when you try to paste it in, the math breaks… superscripts
+detach, logic symbols vanish, and complex equations turn into
+garbage.</p>
+</div>
+</header>
 <p><strong>doc2substack</strong> is a lightweight, open-source utility
 that converts your technical documents into clean, Substack-ready HTML.
 It preserves your prose, converts inline math to native Unicode for
 smooth reading, and renders complex display math as crisp, high-DPI
 images.</p>
-<h2 id="where-to-get-it">Where to Get It</h2>
-<p>The utility is open source and available directly in the
-repository:</p>
-<p><a
-href="https://github.com/closedform/substack/tree/main/utils">https://github.com/closedform/substack/tree/main/utils</a></p>
-<h2 id="how-to-use-it">How to Use It</h2>
-<p>The script is a single Python file with no complex dependencies (just
-standard Python + <code>pandoc</code>).</p>
+<h1 id="where-to-get-it">Where to Get It</h1>
+<p>The utility is open source and available directly in our repository:
+<a href="https://github.com/closedform/substack/tree/main/utils"
+class="uri">https://github.com/closedform/substack/tree/main/utils</a></p>
+<h1 id="how-to-use-it">How to Use It</h1>
 <ol type="1">
-<li><p><strong>Write naturally:</strong> Create your post in LaTeX
-(<code>.tex</code>) or Markdown (<code>.md</code>).</p></li>
+<li><p><strong>Write naturally:</strong> Write your post in LaTeX
+(<code>.tex</code>), Markdown (<code>.md</code>), or any other
+Pandoc-supported format (<code>.docx</code>, <code>.ipynb</code>,
+etc.).</p></li>
 <li><p><strong>Run the converter:</strong></p>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> substack/utils/doc2substack.py my_post.md</span></code></pre></div></li>
+<pre><code>    python substack/utils/doc2substack.py my_post.tex</code></pre></li>
 <li><p><strong>Publish:</strong> Open the generated <code>.html</code>
 file, copy everything, and paste it into the Substack editor.</p></li>
 </ol>
-<h2 id="the-full-example">The Full Example</h2>
-<p>Here is a demonstration of what <code>doc2substack</code> can do. I
-will mix prose, inline math, and display equations.</p>
-<h3 id="unified-inline-math">1. Unified Inline Math</h3>
-<p>It automatically converts simple LaTeX expressions into Unicode
-characters so they flow naturally with the text.</p>
-<ul>
-<li><strong>Input:</strong>
-<code>Let α be the learning rate, σ the volatility, and wᵗ be the weights at time t. We verify that α &gt; 0 and ∇ f ≈ 0.</code></li>
-<li><strong>Output:</strong> Let α be the learning rate, σ the
-volatility, and wᵗ be the weights at time t. We verify that α &gt; 0 and
-∇f ≈ 0.</li>
-</ul>
-<p>This keeps sentences readable without those jagged, misaligned images
-breaking your paragraph's line height.</p>
-<h3 id="complex-display-math">2. Complex Display Math</h3>
-<p>For rigorous derivations, we need proper rendering. The tool detects
-display blocks (like <code>$$...$$</code>) and renders them as
-high-quality images.</p>
-<p>Consider the Gaussian integral: </p><p style="text-align:center;"><img style="vertical-align:middle"
-src="https://latex.codecogs.com/png.latex?\dpi{200}%5Cdisplaystyle%20%5Cint_%7B-%5Cinfty%7D%5E%7B%5Cinfty%7D%20e%5E%7B-x%5E2%7D%20dx%20%3D%20%5Csqrt%7B%5Cpi%7D"
-alt="\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}"
-title="\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}"
-class="math display" /></p>
-<p>Or the definition of the Christoffel symbols in terms of the metric
-tensor gᵢⱼ: </p><p style="text-align:center;"><img style="vertical-align:middle"
-src="https://latex.codecogs.com/png.latex?\dpi{200}%5Cdisplaystyle%20%5CGamma%5Ek_%7Bij%7D%20%3D%20%5Cfrac%7B1%7D%7B2%7Dg%5E%7Bkm%7D%5Cleft%28%5Cfrac%7B%5Cpartial%20g_%7Bmj%7D%7D%7B%5Cpartial%20x%5Ei%7D%20%2B%20%5Cfrac%7B%5Cpartial%20g_%7Bmi%7D%7D%7B%5Cpartial%20x%5Ej%7D%20-%20%5Cfrac%7B%5Cpartial%20g_%7Bij%7D%7D%7B%5Cpartial%20x%5Em%7D%5Cright%29"
-alt="\Gamma^k_{ij} = \frac{1}{2}g^{km}\left(\frac{\partial g_{mj}}{\partial x^i} + \frac{\partial g_{mi}}{\partial x^j} - \frac{\partial g_{ij}}{\partial x^m}\right)"
-title="\Gamma^k_{ij} = \frac{1}{2}g^{km}\left(\frac{\partial g_{mj}}{\partial x^i} + \frac{\partial g_{mi}}{\partial x^j} - \frac{\partial g_{ij}}{\partial x^m}\right)"
-class="math display" /></p>
-<p>These images are generated at 200 DPI (configurable) to look sharp on
-retina displays, and are automatically centered.</p>
-<h3 id="structural-cleanup">3. Structural Cleanup</h3>
-<p>The tool also handles: * <strong>Smart Quotes:</strong> Converts
-"straight quotes" to "curly quotes" (or vice versa depending on your
-preference settings). * <strong>Layout:</strong> Removes artifacts from
-pandoc conversions to ensure a clean paste.</p>
-<h2 id="why-i-built-this">Why I Built This</h2>
-<p>Honestly, I was just tired of the screenshot workflow.</p>
-<p>I write everything in VS Code. I have my <code>$$</code> macros set
-up, my snippets ready, and my git history clean. Moving to Substack felt
-like stepping back into the Stone Age—manually screenshotting equations,
-cropping them, and hoping they aligned with the text.</p>
-<p>I wanted something that let me write in the environment I love
-(LaTeX/Markdown) and just <em>push</em> to the platform I publish on.
-<code>doc2substack</code> is my little bridge between those two worlds.
-It's not perfect, but it sure beats <code>Cmd+Shift+4</code>.</p>
-<h2 id="feedback">Feedback</h2>
+<h1 id="example-the-heat-equation">Example: The Heat Equation</h1>
+<p>The following section demonstrates <code>doc2substack</code> by
+rendering a standard PDE derivation. Notice how numbered equations are
+preserved and rendered as images.</p>
+<p>Consider the one-dimensional heat equation for a function u(x,t)
+representing temperature distribution over a rod: </p><p style="text-align:center;"><img
+style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?\dpi{200}%5Cdisplaystyle%20%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D%0A%20%5Ctag%7B1%7D"
+alt="\frac{\partial u}{\partial t} = \alpha \frac{\partial^2 u}{\partial x^2}
+ \tag{1}"
+title="\frac{\partial u}{\partial t} = \alpha \frac{\partial^2 u}{\partial x^2}
+ \tag{1}" class="math display" /></p><p> where α is the thermal diffusivity
+constant. The goal is to find a solution using the method of separation
+of variables. Let u(x,t) = X(x)T(t). Substituting this form into the PDE
+yields: </p><p style="text-align:center;"><img style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?\dpi{200}%5Cdisplaystyle%20%5Cfrac%7B1%7D%7B%5Calpha%20T%7D%20%5Cfrac%7BdT%7D%7Bdt%7D%20%3D%20%5Cfrac%7B1%7D%7BX%7D%20%5Cfrac%7Bd%5E2X%7D%7Bdx%5E2%7D%20%3D%20-%5Clambda%0A%20%5Ctag%7B2%7D"
+alt="\frac{1}{\alpha T} \frac{dT}{dt} = \frac{1}{X} \frac{d^2X}{dx^2} = -\lambda
+ \tag{2}"
+title="\frac{1}{\alpha T} \frac{dT}{dt} = \frac{1}{X} \frac{d^2X}{dx^2} = -\lambda
+ \tag{2}" class="math display" /></p><p> Here, λ is the separation constant.
+This splits the problem into two ordinary differential equations. The
+temporal component decays exponentially as T(t) ∝ e⁻λᵅ ᵗ, while the
+spatial component satisfies: </p><p style="text-align:center;"><img style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?\dpi{200}%5Cdisplaystyle%20%5Clabel%7Beq%3Aspatial%7D%0A%20%20%20%20X%27%27%28x%29%20%2B%20%5Clambda%20X%28x%29%20%3D%200%0A%20%5Ctag%7B3%7D"
+alt="\label{eq:spatial}
+    X&#39;&#39;(x) + \lambda X(x) = 0
+ \tag{3}" title="\label{eq:spatial}
+    X&#39;&#39;(x) + \lambda X(x) = 0
+ \tag{3}" class="math display" /></p><p> For physical boundary conditions
+(e.g., Dirichlet conditions u(0,t) = u(L,t) = 0), the eigenvalues are
+discrete, given by λₙ = (nπ/L)². The general solution is a superposition
+of these modes: </p><p style="text-align:center;"><img style="vertical-align:middle"
+src="https://latex.codecogs.com/png.latex?\dpi{200}%5Cdisplaystyle%20u%28x%2Ct%29%20%3D%20%5Csum_%7Bn%3D1%7D%5E%7B%5Cinfty%7D%20B_n%20%5Csin%5Cleft%28%5Cfrac%7Bn%5Cpi%20x%7D%7BL%7D%5Cright%29%20e%5E%7B-%5Calpha%20%5Cleft%28%5Cfrac%7Bn%5Cpi%7D%7BL%7D%5Cright%29%5E2%20t%7D%0A%20%5Ctag%7B4%7D"
+alt="u(x,t) = \sum_{n=1}^{\infty} B_n \sin\left(\frac{n\pi x}{L}\right) e^{-\alpha \left(\frac{n\pi}{L}\right)^2 t}
+ \tag{4}"
+title="u(x,t) = \sum_{n=1}^{\infty} B_n \sin\left(\frac{n\pi x}{L}\right) e^{-\alpha \left(\frac{n\pi}{L}\right)^2 t}
+ \tag{4}" class="math display" /></p><p> The coefficients Bₙ are determined by
+the initial condition u(x,0) via Fourier sine series orthogonality.</p>
+<h1 class="unnumbered" id="feedback">Feedback</h1>
 <p>If you find a bug or have a feature request, please <a
 href="https://github.com/closedform/substack/issues">open an issue on
-GitHub</a>. Or, just drop a comment below—I read everything.</p>
-<p>Happy writing.</p>
+GitHub</a>. Or, just drop a comment below.</p>
+<p>Cheers,</p>
 </body>
 </html>
