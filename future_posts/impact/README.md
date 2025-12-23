@@ -1,3 +1,4 @@
-# Impact
+# Impact (WIP)
 
-Placeholder for future post.
+This post is currently a Work In Progress.
+
