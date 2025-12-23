@@ -39,6 +39,17 @@ uv run doc2substack.py article.tex --title "My Article Title"
 2. **Cleanup**: Removes custom block environments, fixes equation wrappers
 3. **Unicode conversion**: Converts simple inline math to Unicode characters
 4. **HTML generation**: Uses pandoc with webtex for display equations
+## Best Practices
+
+**Keep inline math simple.**
+
+The tool attempts to convert inline math (like `$\alpha$`) to Unicode characters. If an expression is too complex for Unicode (e.g., `$\frac{1}{2}$`, integrals, or nested structures), it will be rendered as an inline image or left as raw text, which often looks clunky on Substack.
+
+*   **Good (Unicode-friendly):** `$\alpha$`, `$w^i$`, `$v_{ij}$`, `$\nabla f$`
+*   **Bad for Inline:** `$\frac{\partial f}{\partial x}$`, `$\int_0^1 x dx$`
+
+**Recommendation:** If an expression is complex, move it to a **display block** (`$$...$$` or `\begin{equation}...\end{equation}`). These are automatically rendered as beautiful, high-DPI images that center perfectly in your article.
+
 
 ## Workflow
 
