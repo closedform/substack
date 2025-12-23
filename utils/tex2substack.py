@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-tex2substack: Convert LaTeX documents to Substack-friendly HTML.
+tex2substack: Convert LaTeX or Markdown documents to Substack-friendly HTML.
 
 Handles:
 - Simple inline math: converted to Unicode for natural text flow
@@ -230,17 +230,17 @@ def post_process_html(html_path: Path) -> None:
         f.write(content)
 
 
-def convert_tex_to_substack(
+def convert_to_substack(
     input_path: Path,
     output_path: Path | None = None,
     dpi: int = 200,
     title: str = ""
 ) -> Path:
     """
-    Full pipeline: LaTeX -> Markdown -> Unicode cleanup -> HTML with webtex -> Post-process.
+    Full pipeline: LaTeX/Markdown -> Markdown -> Unicode cleanup -> HTML with webtex -> Post-process.
     
     Args:
-        input_path: Path to input .tex file
+        input_path: Path to input .tex or .md file
         output_path: Path for output .html file (default: same name as input)
         dpi: DPI for equation images (default: 200)
         title: HTML document title
@@ -256,12 +256,19 @@ def convert_tex_to_substack(
     
     print(f"Converting {input_path.name} -> {output_path.name}")
     
-    # Step 1: LaTeX -> Markdown
-    print("  [1/5] Converting LaTeX to Markdown...")
-    md_content = tex_to_markdown(input_path)
+    # Step 1: Input Processing
+    if input_path.suffix.lower() == '.tex':
+        print("  [1/5] Converting LaTeX to Markdown...")
+        md_content = tex_to_markdown(input_path)
+    elif input_path.suffix.lower() == '.md':
+        print("  [1/5] Reading Markdown input...")
+        with open(input_path, 'r', encoding='utf-8') as f:
+            md_content = f.read()
+    else:
+        raise ValueError(f"Unsupported file extension: {input_path.suffix}")
     
     # Step 2: Clean up Markdown
-    print("  [2/5] Cleaning Markdown...")
+    print("  [2/5] Cleaning and normalizing Markdown...")
     md_content = clean_markdown(md_content)
     
     # Step 3: Convert simple inline math to Unicode
@@ -293,16 +300,17 @@ def convert_tex_to_substack(
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Convert LaTeX documents to Substack-friendly HTML',
+        description='Convert LaTeX or Markdown documents to Substack-friendly HTML',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
     uv run tex2substack.py article.tex
+    uv run tex2substack.py article.md
     uv run tex2substack.py article.tex --output article_substack.html
     uv run tex2substack.py article.tex --dpi 300 --title "My Article"
         """
     )
-    parser.add_argument('input', type=Path, help='Input LaTeX file (.tex)')
+    parser.add_argument('input', type=Path, help='Input file (.tex or .md)')
     parser.add_argument('-o', '--output', type=Path, help='Output HTML file (default: input.html)')
     parser.add_argument('--dpi', type=int, default=200, help='DPI for equation images (default: 200)')
     parser.add_argument('--title', type=str, default='', help='HTML document title')
@@ -313,11 +321,11 @@ Examples:
         print(f"Error: Input file not found: {args.input}")
         return 1
     
-    if args.input.suffix.lower() != '.tex':
-        print(f"Warning: Input file does not have .tex extension: {args.input}")
+    if args.input.suffix.lower() not in ['.tex', '.md']:
+        print(f"Warning: Input file does not have .tex or .md extension: {args.input}")
     
     try:
-        convert_tex_to_substack(
+        convert_to_substack(
             args.input,
             args.output,
             dpi=args.dpi,

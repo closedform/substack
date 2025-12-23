@@ -4,8 +4,9 @@ Convert LaTeX documents to Substack-friendly HTML.
 
 ## Features
 
-- **Unicode inline math**: Simple expressions like alpha, w^i, g_{ij} are converted to Unicode for natural text flow
-- **High-DPI equation images**: Complex display math (inside $$...$$) renders as sharp images via CodeCogs
+- **Supports LaTeX and Markdown**: Accepts `.tex` or `.md` files as input
+- **Unicode inline math**: Simple expressions like `$\alpha$`, `$w^i$`, `$g_{ij}$` are converted to Unicode (α, wⁱ, gᵢⱼ) for natural text flow
+- **High-DPI equation images**: Complex display math (`$$...$$`) renders as sharp images via CodeCogs
 - **Automatic cleanup**: Removes pandoc artifacts, fixes environments, cleans formatting
 
 ## Requirements
@@ -16,8 +17,11 @@ Convert LaTeX documents to Substack-friendly HTML.
 ## Usage
 
 ```bash
-# Basic usage
+# LaTeX input
 uv run tex2substack.py article.tex
+
+# Markdown input
+uv run tex2substack.py article.md
 
 # Custom output file
 uv run tex2substack.py article.tex --output article_substack.html
