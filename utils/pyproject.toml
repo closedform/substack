@@ -1,0 +1,10 @@
+[project]
+name = "tex2substack"
+version = "0.1.0"
+description = "Convert LaTeX documents to Substack-friendly HTML"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+tex2substack = "tex2substack:main"

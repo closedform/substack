@@ -1,0 +1,228 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\usepackage{bm}
+\usepackage{tensor}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{framed}
+
+\geometry{margin=1in}
+
+% Macros
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\inner}[2]{\langle #1, #2 \rangle_g}
+\newcommand{\norm}[1]{\|#1\|_g}
+\newcommand{\dd}{\mathrm{d}}
+
+% Theorems
+\newtheorem{prop}{Proposition}
+\newtheorem{lemma}[prop]{Lemma}
+\newtheorem{remark}[prop]{Remark}
+\newtheorem{definition}[prop]{Definition}
+
+% Geometric Extension Box
+\definecolor{gr_gray}{RGB}{40,40,40}
+\newenvironment{extension}[1]{%
+  \def\FrameCommand{\fboxsep=\FrameSep \colorbox{gray!10}}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore}%
+  \noindent\textbf{\color{gr_gray} $\rhd$ Geometric Extension: #1}\par\vspace{0.5em}\small%
+}{\endMakeFramed}
+
+\title{\textbf{The Geometry of Risk and Inference}}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We integrate portfolio theory and statistical inference into a unified Riemannian geometric framework. In the cross-sectional setting regarding assets, the covariance matrix acts as the metric tensor, raising the distinction between portfolio ``vectors'' and alpha ``covectors''. The Transfer Coefficient (TC) appears naturally as the cosine of the angle between the implemented portfolio and the ideal skill vector. In the time-series setting regarding estimation, the Delta method is revealed as the pushforward of the covariance tensor from the manifold of raw moments to the manifold of derived statistics. We derive the asymptotic variance of the Sharpe ratio difference, identifying the Jobson--Korkie result as a scalar contraction.\footnote{This note is inspired by Giuseppe Paleologo's ``IC, TC and All That'' (\url{https://byfire.substack.com/p/information-coefficient-transfer}). We recast the core ideas using the language of differential geometry to highlight the underlying structure... and also because its absolutely ridiculous and I'm a cranky physicist turned quant who misses physics and despises finance papers (mostly because I can't read them easily).}
+\end{abstract}
+
+\section{Introduction}
+Financial mathematics is often obscured by a forest of indices and sums. By adopting the language of differential geometry, we reveal the simple structures underneath. This note establishes two geometric settings:
+\begin{enumerate}
+    \item \textbf{The Manifold of Assets}: Where portfolios live. Here, risk defines distances and angles.
+    \item \textbf{The Manifold of Statistics}: Where estimators live. Here, the Central Limit Theorem defines the local tangent structure.
+\end{enumerate}
+
+\textbf{Why Geometry?} This approach offers three distinct advantages:
+\begin{enumerate}
+    \item \textbf{Unified Intuition}: Both domains are governed by a \emph{metric tensor} representing ``cost''. In asset space, $\Sigma$ measures the cost of risk; in statistical space, $\Gamma$ measures the cost of uncertainty.
+    \item \textbf{Coordinate Invariance}: Financial quantities (Sharpe, PnL) are scalars and must not depend on arbitrary choices of basis (e.g., dollars vs. cents, central vs. raw moments). Geometry enforces this invariance by construction.
+    \item \textbf{Computational Power}: Complex derivations, such as the asymptotic variance of the Sharpe ratio, reduce from pages of algebra to simple tensor contractions.
+\end{enumerate}
+
+\section{Part I: The Riemannian Geometry of Assets}
+
+Consider the space of $N$ assets. A portfolio is specified by its allocation vector $w$.
+
+\subsection{Vectors, Duals, and the Metric}
+We must rigorously distinguish between two types of objects in the coordinate basis:
+\begin{itemize}
+    \item \textbf{Allocations are Contravariant Vectors ($w^i$)}:
+    They represent the state of the system (quantities held, e.g., number of shares). They have Volume units $[V]$. Under a change of basis (e.g., stock split $S' = \lambda S$), the components transform inversely to the basis: $w' = (1/\lambda) w$.
+    \item \textbf{Alphas are Covariant Covectors ($\alpha_i$)}:
+    They represent the gradient of expected return (force acting on the system). They have units of Pressure $[P]$ so that the product $\alpha_i w^i$ is money (or unitless return). Under a change of basis, they transform covariantly with the basis: $\alpha' = \lambda \alpha$.
+\end{itemize}
+The expected PnL is the contraction $\E[\text{PnL}] = \alpha_i w^i$. To discuss risk, we introduce the covariance metric $g_{ij} = \Sigma_{ij}$.\footnote{\textbf{Thermodynamic Analogy}: A useful physical parallel is Thermodynamics. Allocations $w$ are \textbf{Extensive} variables (they scale with system size, like Volume $V$). Alphas $\alpha$ are \textbf{Intensive} variables (they do not scale, like Pressure $P$). Their pairing PnL (like Energy) is naturally a scalar. The "density" interpretation arises because we often normalize $w$ (setting $\sum w_i = 1$) to remove the extensive scale freedom.}
+
+\subsection{The Risk Frame (Vielbein)}
+The metric $g_{ij}$ is generally not identity (assets are correlated). To reveal the simple geometry, we move to an \textbf{Orthonormal Frame} (or ``Risk Frame'') where risk is uniform.
+We introduce the square-root matrix (Vielbein) $e^{\hat{a}}{}_i$ such that $\Sigma = e^T e$. In index notation, this decomposition expresses the covariance matrix as:
+\begin{equation}
+    \Sigma_{ij} = \delta_{\hat{a}\hat{b}} e^{\hat{a}}{}_i e^{\hat{b}}{}_j.
+\end{equation}
+In this flat frame, we define our primary geometric objects:
+\begin{enumerate}
+    \item \textbf{The Risk Portfolio ($p$)}: The allocation vector rescaled by risk.
+    \begin{equation}
+        p^{\hat{a}} = e^{\hat{a}}{}_i w^i \quad (\approx w \cdot \sigma).
+    \end{equation}
+    Its length is the total volatility: $\|p\| = \sqrt{\delta_{\hat{a}\hat{b}} p^{\hat{a}} p^{\hat{b}}} = \sqrt{w^T \Sigma w} = \text{Risk}$.
+
+    \item \textbf{The Skill Vector ($s$)}: The alpha covector rescaled by inverse risk (whitened).\footnote{Computations are often simpler in this orthonormal frame. Here $\hat{a},\hat{b}$ are frame indices (flat/hatted) and $i,j$ are coordinate indices (curved). The Sharpe ratio becomes the standard Euclidean dot product projection.}
+    We obtain $s$ by raising the index of $\alpha$ with the metric, then mapping to the frame:
+    \begin{equation}
+        s^{\hat{a}} = e^{\hat{a}}{}_k s^k = e^{\hat{a}}{}_k g^{ki} \alpha_i.
+    \end{equation}
+    Its length is the \textbf{Information Coefficient (IC)}:
+    \begin{equation}
+        \text{IC} := \|s\| = \sqrt{\delta_{\hat{a}\hat{b}} s^{\hat{a}} s^{\hat{b}}} = \sqrt{\alpha_i g^{ij} \alpha_j}.
+    \end{equation}
+\end{enumerate}
+
+\subsection{The Sharpe Ratio and Transfer Coefficient}
+In the Risk Frame, the metric is simply $\delta_{\hat{a}\hat{b}}$ (Euclidean). The Sharpe ratio is the projection of skill onto the implemented portfolio:
+\begin{equation}
+    \eta(w) = \frac{\langle s, p \rangle}{\|p\|}.
+\end{equation}
+This is maximized when $p$ aligns with $s$. The \textbf{Transfer Coefficient (TC)} is the cosine of the angle $\theta$ between them:
+\begin{equation}
+    \text{TC} := \cos(\theta) = \frac{\langle s, p \rangle}{\|s\|\,\|p\|}.
+\end{equation}
+Thus we recover the fundamental law: $\text{Sharpe} = \text{IC} \times \text{TC}$.
+
+\begin{remark}[Scale Invariance and Projective Space]
+The Sharpe ratio is invariant under the scaling of the portfolio vector $w \to \lambda w$ for $\lambda > 0$ (leverage). This scale invariance (homogeneity of degree 0) implies that the Sharpe ratio is not a function on the vector space of portfolios, but rather on the \textbf{Projective Space} (or the Sphere of Rays). Geometrically, maximizing the Sharpe ratio is equivalent to finding a point on the sphere $S^{N-1}$ that minimizes the geodesic distance to the skill vector $s$.
+\end{remark}
+
+\begin{lemma}[Orthogonal decomposition of Risk]
+Decompose the risk portfolio $p$ into a component aligned with skill and an orthogonal component: $p = p_{\parallel} + p_{\perp}$.
+Then:
+\begin{equation}
+    \frac{\|p_{\perp}\|^2}{\|p\|^2} = 1 - \text{TC}^2.
+\end{equation}
+The orthogonal component $p_{\perp}$ corresponds to variance consumed by positions that are uncorrelated with alpha. It is ``wasted risk''.
+\end{lemma}
+
+\subsection{Constrained Optimization: A Worked Example}
+In practice, portfolios face constraints (e.g., dollar-neutrality, sector limits). Geometrically, constraints define a \textbf{submanifold} $\mathcal{C} \subset \mathbb{R}^N$ on which the portfolio must live.
+
+\textbf{Setup}: Consider a two-asset world with holdings $(w^1, w^2)$. Let $\alpha = (\alpha_1, \alpha_2)$ be the alphas and $\Sigma$ the covariance matrix. The unconstrained optimal portfolio aligns with the skill vector $s^{\hat{a}} \propto (\Sigma^{-1}\alpha)^i$.
+
+\textbf{Constraint}: Impose dollar-neutrality: $w^1 + w^2 = 0$. This defines a one-dimensional submanifold (a line through the origin).
+
+\textbf{Geometric Effect}: In the Risk Frame, the constraint becomes a hyperplane (here, a line). The constrained optimum is the \emph{projection} of the skill vector $s$ onto this hyperplane. Let $n^{\hat{a}}$ be the unit normal to the constraint surface. The constrained skill vector is:
+\begin{equation}
+    s^{\hat{a}}_{\text{constrained}} = s^{\hat{a}} - (s \cdot n) n^{\hat{a}}.
+\end{equation}
+The Transfer Coefficient under the constraint becomes:
+\begin{equation}
+    \text{TC}_{\text{constrained}} = \frac{\langle s_{\text{constrained}}, p \rangle}{\|s_{\text{constrained}}\| \|p\|}.
+\end{equation}
+Since $\|s_{\text{constrained}}\| \leq \|s\|$, the constraint \emph{reduces achievable IC}. Meanwhile, the constrained portfolio can now achieve $\text{TC} = 1$ (perfect alignment with $s_{\text{constrained}}$), but with a diminished target.
+
+\textbf{Example}: Let $\Sigma = I$ (uncorrelated, unit variance), and $\alpha = (1, 0.5)$. The unconstrained skill vector is $s = \alpha = (1, 0.5)$ with $\|s\| = \sqrt{1.25} \approx 1.12$.
+
+The dollar-neutral constraint $w^1 + w^2 = 0$ has normal $n = \frac{1}{\sqrt{2}}(1, 1)$. Projecting:
+\begin{equation}
+    s_{\text{constrained}} = (1, 0.5) - \frac{1.5}{2}(1,1) = (0.25, -0.25).
+\end{equation}
+The constrained IC is $\|s_{\text{constrained}}\| = \sqrt{0.125} \approx 0.35$, a 69\% reduction. The optimal constrained portfolio is $w \propto (1, -1)$, which aligns perfectly with $s_{\text{constrained}}$.
+
+\begin{remark}[Multiple Constraints]
+With $k$ linear constraints, the feasible set is an $(N-k)$-dimensional affine subspace. The projection becomes orthogonal projection onto this subspace. Non-linear constraints (e.g., box constraints $|w^i| \leq 1$) yield curved submanifolds, and the projection becomes a geodesic projection---generally requiring numerical methods.
+\end{remark}
+
+\section{Part II: The Geometry of Statistical Inference}
+
+We now shift focus from the geometry of assets to the geometry of probability distributions.
+
+\subsection{The Manifold of Moments}
+Let our statistical manifold $\mathcal{Z}$ be coordinatized by the raw moments $z^\mu$ (e.g., sample means, sample second moments). The Central Limit Theorem (CLT) governs the fluctuations of these moments. It states that the fluctuations $\delta z^\mu = \hat{z}^\mu - z^\mu$ live in the tangent space $T_z\mathcal{Z}$ and are distributed as a multivariate Gaussian with covariance tensor $\Gamma^{\mu\nu}$:
+\begin{equation}
+    \sqrt{T} \delta z \sim \mathcal{N}(0, \Gamma).
+\end{equation}
+$\Gamma^{\mu\nu} = \E[\delta z^\mu \delta z^\nu]$ is a $(2, 0)$ tensor field on $\mathcal{Z}$.
+
+\subsection{The Delta Method as a Pushforward}
+We are interested in derived parameters $\theta^\alpha$ (e.g., variances, Sharpe ratios) which are functions of $z$. Let $\phi: \mathcal{Z} \to \mathcal{P}$ be the map from moments to parameters.
+The linear map deriving the fluctuations in parameters ($\delta \theta$) from fluctuations in moments ($\delta z$) is the \textbf{Pushforward Map} (or Jacobian) $E: T_z\mathcal{Z} \to T_\theta\mathcal{P}$. Its components are:
+\begin{equation}
+    E^\alpha{}_\mu = \frac{\partial \theta^\alpha}{\partial z^\mu}.
+\end{equation}
+The covariance tensor on the parameter manifold $\mathcal{P}$ is the pushforward of $\Gamma$:
+\begin{equation}
+    \Omega^{\alpha\beta} = E^\alpha{}_\mu E^\beta{}_\nu \Gamma^{\mu\nu}.
+\end{equation}
+In compact notation: $\Omega = \phi_* \Gamma$. This corresponds to the standard transformation rule for $(2,0)$ tensors under a change of coordinates.
+
+\section{Part III: Application to Sharpe Difference}
+
+We apply this machinery to find the variance of the difference between two Sharpe ratios, $\Delta \eta = \eta_1 - \eta_2$.
+
+\subsection{Coordinates and Tensor Components}
+\begin{enumerate}
+    \item \textbf{Raw Coordinates ($z^\mu$)}: $(\mu_1, \mu_2, q_1, q_2)$ where $q_i = \E[r_i^2]$.
+    \item \textbf{Parameter Coordinates ($\theta^\alpha$)}: $(\mu_1, \mu_2, v_1, v_2)$ where $v_i = \sigma_i^2 = q_i - \mu_i^2$.
+\end{enumerate}
+The Jacobian $E^\alpha{}_\mu$ transforming $\delta z$ to $\delta \theta$ is:
+\begin{equation}
+    E = \begin{pmatrix}
+        1 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 \\
+        -2\mu_1 & 0 & 1 & 0 \\
+        0 & -2\mu_2 & 0 & 1
+    \end{pmatrix}.
+\end{equation}
+The Covariance Tensor $\Omega$ in parameter space, assuming Gaussian returns (Basu's theorem implies independence of sample mean and variance), is block diagonal:
+\begin{equation}
+    \Omega = \begin{pmatrix}
+         v_1 & \rho\sqrt{v_1v_2} & 0 & 0 \\
+         \rho\sqrt{v_1v_2} & v_2 & 0 & 0 \\
+         0 & 0 & 2v_1^2 & 2\rho^2 v_1 v_2 \\
+         0 & 0 & 2\rho^2 v_1 v_2 & 2v_2^2
+    \end{pmatrix}.
+\end{equation}
+
+\subsection{The Gradient Covector}
+Our target function is the scalar field $f(\theta) = \eta_1 - \eta_2 = \frac{\mu_1}{\sqrt{v_1}} - \frac{\mu_2}{\sqrt{v_2}}$.
+Its differential $df$ is a covector with components $g_\alpha = \frac{\partial f}{\partial \theta^\alpha}$:
+\begin{equation}
+    g_\alpha = \begin{pmatrix} v_1^{-1/2} \\ -v_2^{-1/2} \\ -\frac{1}{2}\mu_1 v_1^{-3/2} \\ \frac{1}{2}\mu_2 v_2^{-3/2} \end{pmatrix}.
+\end{equation}
+
+\textbf{Geometric Interpretation (Foliation)}: The function $f(\theta)$ defines a \emph{foliation} of the statistical manifold by level sets (hypersurfaces of constant Sharpe difference). The gradient covector $g$ is the \textbf{normal vector} to these leaves. The asymptotic variance is simply the ``squared length'' of this normal vector, as measured by the covariance metric $\Omega$. It represents the cost of moving orthogonal to the foliation---i.e., the uncertainty in the direction that actually changes the Sharpe ratio.
+
+\subsection{Metric Contraction (The Result)}
+The asymptotic variance is the scalar obtained by contracting the gradient covector with the covariance tensor:
+\begin{equation}
+    \Var(\Delta \eta) \approx \frac{1}{T} \Omega^{\alpha\beta} (df)_\alpha (df)_\beta.
+\end{equation}
+\textbf{Geometric Intuition:} Just as the length of a vector $v$ is $\|v\|^2 = g_{ij} v^i v^j$, the ``uncertainty'' of a scalar function $f$ is the squared length of its gradient $df$ measured by the covariance metric $\Omega$. This quantity is a scalar invariant: it does not depend on which coordinate system (e.g., central moments vs. raw moments) we use to perform the calculation.
+Performing the matrix multiplication (see \texttt{derivations.ipynb} for symbolic verification):
+\begin{align}
+    \Omega^{\alpha\beta} (df)_\alpha (df)_\beta &= \underbrace{v_1(df)_1^2 + v_2(df)_2^2 + 2\rho\sqrt{v_1v_2}(df)_1(df)_2}_{\text{Mean terms}} \\
+    &+ \underbrace{2v_1^2(df)_3^2 + 2v_2^2(df)_4^2 + 2(2\rho^2 v_1 v_2)(df)_3(df)_4}_{\text{Variance terms}}.
+\end{align}
+Substituting the components yields:
+\begin{equation}
+    \Var(\Delta \eta) \approx \frac{1}{T} \left[ 2(1-\rho) + \frac{1}{2}(\eta_1^2 + \eta_2^2) - \rho^2 \eta_1\eta_2 \right].
+\end{equation}
+This recovers the Jobson--Korkie result as a clean geometric contraction.\footnote{If returns are not Gaussian, the covariance tensor $\Omega$ acquires off-diagonal blocks relating means and variances (skewness). Geometrically, this introduces ``torsion'' to the statistical manifold, twisting the independence of the first and second moments.}
+
+\end{document}
