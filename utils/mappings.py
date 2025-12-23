@@ -1,6 +1,6 @@
 """
 Mappings for LaTeX to Unicode conversion.
-Used by tex2substack.py
+Used by doc2substack.py
 """
 
 GREEK = {
