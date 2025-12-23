@@ -19,7 +19,12 @@ For your Substack article:
 - **High-DPI equation images**: Complex display math (`$$...$$`) renders as sharp images via CodeCogs
 - **Automatic cleanup**: Removes pandoc artifacts, fixes environments, cleans formatting
 
-## Usage
+
+## Installation & Usage
+
+Found in `substack/utils`. You can run this utility with `uv` (recommended) or standard Python.
+
+### Option 1: Using `uv` (Recommended)
 
 ```bash
 # LaTeX input
@@ -27,16 +32,26 @@ uv run doc2substack.py article.tex
 
 # Markdown input
 uv run doc2substack.py article.md
+```
 
+### Option 2: Standard Python
+
+Since the script only uses the standard library (no `pip install` needed), you can run it directly if you have Python 3 installed.
+
+```bash
+python doc2substack.py article.tex
+```
+
+### Options
+
+```bash
 # Custom output file
-uv run doc2substack.py article.tex --output article_substack.html
+python doc2substack.py article.tex --output article_substack.html
 
 # Higher DPI for sharper equations
-uv run doc2substack.py article.tex --dpi 300
-
-# With custom title
-uv run doc2substack.py article.tex --title "My Article Title"
+python doc2substack.py article.tex --dpi 300
 ```
+
 
 ## Best Practices
 

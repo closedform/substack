@@ -298,16 +298,25 @@ def convert_to_substack(
     return output_path
 
 
+import shutil
+
+def check_dependencies():
+    """Check if required system dependencies are installed."""
+    if not shutil.which('pandoc'):
+        print("Error: 'pandoc' is not installed or not on PATH.")
+        print("  Please install pandoc: https://pandoc.org/installing.html")
+        exit(1)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description='Convert LaTeX or Markdown documents to Substack-friendly HTML',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-    uv run doc2substack.py article.tex
-    uv run doc2substack.py article.md
-    uv run doc2substack.py article.tex --output article_substack.html
-    uv run doc2substack.py article.tex --dpi 300 --title "My Article"
+    python doc2substack.py article.tex
+    python doc2substack.py article.md
+    python doc2substack.py article.tex --output article_substack.html
         """
     )
     parser.add_argument('input', type=Path, help='Input file (.tex or .md)')
@@ -316,6 +325,8 @@ Examples:
     parser.add_argument('--title', type=str, default='', help='HTML document title')
     
     args = parser.parse_args()
+    
+    check_dependencies()
     
     if not args.input.exists():
         print(f"Error: Input file not found: {args.input}")
