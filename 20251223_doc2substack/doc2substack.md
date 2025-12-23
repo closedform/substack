@@ -4,9 +4,7 @@ If you write about physics, math, or quantitative finance, you know the pain of 
 
 You have a beautiful LaTeX document or a Markdown file full of carefully crafted equations. You want to publish it on Substack. But when you paste it in, the math breaks. Superscripts detach, logic symbols vanish, and complex equations turn into garbage.
 
-I built **doc2substack** to solve this.
-
-It is a lightweight, open-source utility that converts your technical documents into clean, Substack-ready HTML. It preserves your prose, converts inline math to native Unicode for smooth reading, and renders complex display math as crisp, high-DPI images.
+**doc2substack** is a lightweight, open-source utility that converts your technical documents into clean, Substack-ready HTML. It preserves your prose, converts inline math to native Unicode for smooth reading, and renders complex display math as crisp, high-DPI images.
 
 ## Where to Get It
 
