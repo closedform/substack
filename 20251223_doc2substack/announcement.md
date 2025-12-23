@@ -32,10 +32,10 @@ Here is a demonstration of what `doc2substack` can do. We will mix prose, inline
 ### 1. Unified Inline Math
 We automatically convert simple LaTeX expressions into Unicode characters so they flow naturally with the text.
 
-*   **Input:** `Let $\alpha$ be the learning rate and $w^t$ be the weights at time $t$.`
-*   **Output:** Let α be the learning rate and wᵗ be the weights at time t.
+*   **Input:** `Let $\alpha$ be the learning rate, $\sigma$ the volatility, and $w^t$ be the weights at time $t$. We verify that $\alpha > 0$ and $\nabla f \approx 0$.`
+*   **Output:** Let α be the learning rate, σ the volatility, and wᵗ be the weights at time t. We verify that α > 0 and ∇f ≈ 0.
 
-This keeps sentences readable without jagged images breaking the line height.
+This keeps sentences readable without those jagged, misaligned images breaking your paragraph's line height.
 
 ### 2. Complex Display Math
 For rigorous derivations, we need proper rendering. The tool detects display blocks (like `$$...$$`) and renders them as high-quality images.
@@ -55,6 +55,10 @@ The tool also handles:
 
 ## Why We Built This
 
-We believe technical writing should be portable. You shouldn't have to rewrite your equations or screenshots just to share ideas. With `doc2substack`, the source of truth remains your code repository, and the blog is just a view onto that knowledge.
+Honestly, I was just tired of the screenshot workflow.
+
+I write everything in VS Code. I have my `$$` macros set up, my snippets ready, and my git history clean. Moving to Substack felt like stepping back into the Stone Age—manually screenshotting equations, cropping them, and hoping they aligned with the text.
+
+I wanted something that let me write in the environment I love (LaTeX/Markdown) and just *push* to the platform I publish on. `doc2substack` is my little bridge between those two worlds. It's not perfect, but it sure beats `Cmd+Shift+4`.
 
 Happy writing.
